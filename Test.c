@@ -62,14 +62,14 @@ int main(){
 	insertChild(temp, &d);
 	TreeRef Two=(TreeRef)(headData(getChildren(temp)));
 	//
-	*(int*)(tree->value)
+	//*(int*)(tree->value);
 	void** p= (rootData(Two));
 	printf("this is the fucking right value thou %d\n", *p);
 	printf("this is TWO %d\n", *(int*)(rootData(Two)));// works- no one knows why
-
+    */
     ///OBSERVATION- it seems that with each adding of child, we go one level down pointer wise, which inturn creates the problem
     //lets try it one level down, we want to print 5-e
-	insertChild(Two, &e);
+	/*insertChild(Two, &e);
     TreeRef Three=(TreeRef)(headData(getChildren(Two)));
 
     void*** q= (rootData(Three));
@@ -90,11 +90,13 @@ int main(){
 	//TreeRef Two=(TreeRef)(headData(getChildren(temp)));
 	//printf("this is TWO %d\n", rootData(Two));
     printf("this is the Normal DFS\n");
-    DFSPrint(temp);
+    DFSPrint(temp,);
     unMarkTree(temp);
-    printf("this is the Alternate DFS\n");
-    DFSTwo(temp);//not working proeperly
-    */
+    printf("now attempting free");
+    //printf("this is the Alternate DFS\n");
+    //DFSTwo(temp);//not working proeperly
+    destroyTree(temp,free);*/
+
     ///Test 4
     /*int a=1,b=2,c=3,d=4,e=5,f=6,g=7;
 	TreeRef temp = newTree((void*)&a);
@@ -138,11 +140,15 @@ int main(){
 	DFSPrint(temp,printInt);
 
     ///IF WE WANTED TO USE TEMP AGAIN, WE WOULD CALL unMark
+    /*
 	WidgetRef a2=newWidget(1,1,500,500,1,"hello","HiThere");
     TreeRef temp2= newTree((void*)a2);
     WidgetRef b2=newWidget(2,2,502,502,2,"hello2","HiThere2");
     insertChild(temp2, b2);
     DFSPrint(temp2,printWidget);
+    */
+    printf("now attempting Free\n\n");
+    destroyTree(temp, free);
 	return 0;
 }
 

@@ -57,15 +57,15 @@ ListRef append(ListRef list, void* data){
 
 void destroyList(ListRef list, FreeFunc freeData){
 	ListRef curNext;
-	int cnt=0;
+	//int cnt=0;
 	while (!isEmpty(list)){
-		cnt++;
+		//cnt++;
 		freeData (list->value);
 		curNext=tail(list);
 		free(list);
 		list=curNext;
 	}
-	if (cnt==0) printf ("cnt: %d", cnt);
+	//if (cnt==0) printf ("cnt: %d", cnt);
 	free(list);
 }
 
