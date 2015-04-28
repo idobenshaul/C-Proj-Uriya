@@ -16,7 +16,5 @@ void DFSPrint (TreeRef tree, printFunc print);
 void DFSTwo (TreeRef tree, printFunc print);
 ListRef getChildren(TreeRef parent);
 void* rootData(TreeRef tree);
-void destroyTree(TreeRef tree, FreeFunc freeData);
-void recursiveDestroyTree(TreeRef tree,FreeFunc freeData);
 #endif /* TREEUTILS_H_ */
 

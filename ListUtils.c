@@ -1,15 +1,12 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "ListUtils.h"
 
-
-
 struct List{
-    struct List* next;
-    void* value;
+	struct List* next;
+	void* value;
 };
-typedef struct List* ListRef;
+
 
 ListRef newList(void* headData){
 	ListRef new;
@@ -23,11 +20,6 @@ ListRef newList(void* headData){
 void* headData(ListRef list){
 	//printf ("headData");
 	//printBoard((*Child)(list->value)->state);
-	//printf("list value is %d", list->value);
-	//the value printed here is
-	//int* p = list->value;
-	//int** q = *p;
-	//printf("the current value is %d\n", list->value);
 	return (isEmpty(list))? NULL : list->value;
 
 }
@@ -57,15 +49,15 @@ ListRef append(ListRef list, void* data){
 
 void destroyList(ListRef list, FreeFunc freeData){
 	ListRef curNext;
-	//int cnt=0;
+	int cnt=0;
 	while (!isEmpty(list)){
-		//cnt++;
+		cnt++;
 		freeData (list->value);
 		curNext=tail(list);
 		free(list);
 		list=curNext;
 	}
-	//if (cnt==0) printf ("cnt: %d", cnt);
+	if (cnt==0) printf ("cnt: %d", cnt);
 	free(list);
 }
 

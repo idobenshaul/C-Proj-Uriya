@@ -121,33 +121,6 @@ void DFSTwo (TreeRef tree, printFunc print){
 	tree->Marked=1;
 	print(*(void**)(rootData(tree)));
 }
-void destroyTree(TreeRef tree, FreeFunc freeData){
-	unMarkTree(tree);
-    recursiveDestroyTree(tree,freeData);
-    free(tree);
-}
-void recursiveDestroyTree(TreeRef tree,FreeFunc freeData){
-    printf("hello\n");
-	if(isEmpty(getChildren(tree))){//tree.children==NULL
-		tree->Marked=1;
-		//printf("%d\n",*(void**)(rootData(tree)));
-		freeData((void**)(rootData(tree)));///SENDS ACTUAL OBJECT, NOT A REFERENCE!!
-		return;
-	}
-	ListRef curChild=getChildren(tree);
-    ListRef temp;
-	while(curChild!=NULL){
-        //printf("current Marked is %d",((TreeRef)(headData(curChild)))->Marked);
-		if((getMarked((TreeRef)(headData(curChild))))==0){
-			recursiveDestroyTree(headData(curChild),freeData);
-		}
-		temp=tail(curChild);
-		free(curChild);
-		curChild=temp;
-	}
-	tree->Marked=1;
-	freeData((void**)(rootData(tree)));
-}
 
 
 int isEmptyTree(TreeRef tree){
@@ -159,4 +132,15 @@ int isEmptyTree(TreeRef tree){
 		return 0;
 	}
 }
+
+/*void destroyList(ListRef list, FreeFunc freeData){
+	ListRef curNext;
+	while (!isEmpty(list)){
+		freeData (list->value);
+		curNext=tail(list);
+		free(list);
+		list=curNext;
+	}
+	free(list);
+}*/
 
