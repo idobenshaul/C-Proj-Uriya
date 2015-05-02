@@ -55,8 +55,7 @@ void updateEvalChildren(ListRef list,int (*evaluate) (void* state)){
 	    cnt++;
 		data=(Child*)(headData(cur));
         printf("hey1");
-
-		data->result.value=evaluate(data->state);
+		data->result.value=evaluate(&(data->state));
 		printf("hey3");
 		cur=tail(cur);
 		printf("hey4");
@@ -79,6 +78,7 @@ struct MiniMaxResult getListMaxEval(ListRef list){
 	}
 	return res;
 }
+
 //gets a list, and returns the min value out of the eval's of all it's members
 struct MiniMaxResult getListMinEval(ListRef list){
 	ListRef cur=list;
@@ -108,9 +108,7 @@ struct MiniMaxResult getBestChild(
 
 	struct MiniMaxResult result= {-100,-100};
 	ListRef children, cur;
-
 	children = getChildren(state);
-
 	cur=children;
 
 	//creating a list of children and filling it with scores
@@ -118,7 +116,7 @@ struct MiniMaxResult getBestChild(
 	if (maxDepth==1){ //recursion base
 
         //Child->result=evalFunc(Child->state);
-        updateEvalChildren(children,evaluate);
+        //updateEvalChildren(children,evaluate);
 		if (isMaxPlayer){
 			result= getListMaxEval(children);
 		}
@@ -128,11 +126,14 @@ struct MiniMaxResult getBestChild(
 
 	}
 	else{ //recursion step
+        switchIsOriginalTurn();
+        switchTurn();
 		ListRef levelKids=newList(NULL);
 		while (!isEmpty(cur)){
 		//recursive call with depth-1, start state is the state of this node, opposite of max player
 			Child* data=(Child*)(headData(cur));
 			Child* newChild = (Child*)malloc(sizeof(struct Child));
+
 			newChild->result.value=getBestChild(&(data->state),maxDepth-1,
 							getChildren,freeState,evaluate,	!isMaxPlayer).value;
 			newChild->result.index=data->result.index;
@@ -141,6 +142,7 @@ struct MiniMaxResult getBestChild(
 			cur=tail(cur);
 
 		}
+
 		if (isMaxPlayer){
 			result= getListMaxEval(levelKids);
 		}

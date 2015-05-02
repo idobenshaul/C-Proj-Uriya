@@ -26,6 +26,7 @@ int evalFunc(void* state){
     int i = 0, j = 0;
     int catR,catC,mouseR,mouseC,cheeseR,cheeseC;
 	char temp;
+
 	for (i = 0; i < 7; i++) {
 		for (j = 0; j < 7; j++) {
 			temp = (*board)[i][j];
@@ -48,7 +49,8 @@ int evalFunc(void* state){
 
     int DCatMouse= ((catR-mouseR)*(catR-mouseR)+(catC-mouseC)*(catC-mouseC));
     int DMouseCheese= ((cheeseR-mouseR)*(cheeseR-mouseR)+(cheeseC-mouseC)*(cheeseC-mouseC));
-    return DCatMouse-DMouseCheese;
+    return DMouseCheese-DCatMouse;
+
 }
 void copyArray(char *** original, char ***copy){////////for int[6][7]
 	int i=0,j=0;
@@ -69,6 +71,7 @@ ListRef getChildrenStates (void* state){
 	ListRef children=newList(NULL);
     char** curState;
     Child** states[4];
+    Child* childs[4];
     Child* curChild;
     //int realRow,realCol;
     for(i=0;i<4;i++){
@@ -79,56 +82,28 @@ ListRef getChildrenStates (void* state){
         board_init(&curState);
         copyArray(board,&curState);
         updateGameStatus(curState);
-        printf("printing the %d'th direction before move!!\n", i+1);
-        printBoard(curState);
+        //printf("printing the %d'th direction before move!!\n", i+1);
+        //printBoard(curState);
         move(&curState,i+1);
         printf("printing the %d'th direction\n", i+1);
         printBoard(curState);
-        curChild=(Child*)malloc(sizeof(Child));
-        curChild->state=curState;
-        curChild->result.value=evalFunc(&(curChild->state));
-        states[i]=(Child**)(&curState);
-        /*if(strcmp(turn,"cat")==0){
-            switch(i){
-                case 1:
-                    catRow--;
-                    break;
-                case 2:
-                    catCol--;
-                    break;
-                case 3:
-                    catRow++;
-                    break;
-                case 4:
-                    catCol++;
-                    break;
-
-            }
-        }
-        else{
-           switch(i){
-                case 1:
-                    mouseRow--;
-                    break;
-                case 2:
-                    mouseCol--;
-                    break;
-                case 3:
-                    mouseRow++;
-                    break;
-                case 4:
-                    mouseCol++;
-                    break;
-
-            }
-        }*/
-
+        childs[i]=(Child*)malloc(sizeof(Child));
+        childs[i]->state=curState;
+        childs[i]->result.value=evalFunc(&(childs[i]->state));
+        childs[i]->result.index=i+1;
+        states[i]=(Child**)(&childs[i]);
     }
-    printf("printing the board after the loop\n");
-    printBoard(*board);
+
+    //printf("printing the board after the loop\n");
+    //printBoard(*board);
     updateGameStatus(*board);
     for(i=0;i<4;i++){
-        append(children, (Child*)*(states[i]));
+        Child a=*(*(states[i]));
+        if(a.result.index!=badIndex || cntFailedMoves==0){
+            append(children, (Child*)*(states[i]));
+            printf("now printing children, %d\n",i+1);
+            printf("%d\n",((Child*)*(states[i]))->result.value);
+        }
     }
 
 
@@ -142,24 +117,32 @@ void switchTurn() {
 		sprintf(turn, "cat");
 
 }
+void switchIsOriginalTurn(){
+    if (isOriginalTurn==0) {
+            isOriginalTurn=1;
+        }
+    else{
+        isOriginalTurn=0;
+    }
+}
 
 int main(int argc, char* args[]) {
 
-
-
 	setvbuf(stdout, NULL, _IONBF, 0);
-	gameOptions game = { 0, 1, 1, 0 };
-
+	gameOptions game = { 0, 1, 2, 0 };
+    int moveWork=-17;
 	char temp[7];
 	char** board; //7*7 board
 	board = loadGame(1);
 	printf("result %d\n", updateGameStatus(board));
 	printf("cat %d %d", catRow, catCol);
 	while (!updateGameStatus(board)) {
-        ///we'll use Cay as maxPlayer:1, and Mouse as maxPlayer:0
+        ///we'll use Cat as maxPlayer:1, and Mouse as maxPlayer:0
         ///same goes for comp1 and comp2
-        int compDirection;
+        int actualCatRow=catRow, actualCatCol=catCol,actualMouseRow=mouseRow, actualMouseCol=mouseCol;
 		printBoard(board);
+		isOriginalTurn=1;
+
 		//printf("cat human : %d, mouse human : %d");
 		if ((game.cat_human==1 && strcmp(turn, "cat")==0)//if it's human turn
 				|| (game.mouse_human==1 && strcmp(turn, "mouse")==0)) {
@@ -171,37 +154,96 @@ int main(int argc, char* args[]) {
 
             if (!game.cat_human && !game.mouse_human){
                 if(strcmp(turn, "cat")){
-                    compDirection=getBestChild(&board,game.cat_skill, getChildrenStates, free, evalFunc, 1).index;
-                    move(&board,compDirection);
+                    temp[0]=getBestChild(&board,game.cat_skill, getChildrenStates, free, evalFunc, 1).index;
+
                 }
                 else{
-                    compDirection=getBestChild(&board,game.mouse_skill, getChildrenStates, free, evalFunc, 0).index;
-                    move(&board,compDirection);
+                    temp[0]=getBestChild(&board,game.mouse_skill, getChildrenStates, free, evalFunc, 0).index;
+
                 }
             }
             if(!game.cat_human && game.mouse_human){//cat is Comp, mouse is human, Comp turn
-                compDirection=getBestChild(&board,game.cat_skill, getChildrenStates, free, evalFunc, 1).index;
+                temp[0]=getBestChild(&board,game.cat_skill, getChildrenStates, free, evalFunc, 1).index;
+
             }
             else{//mouse is Comp, cat is human, Comp turn
-                compDirection=getBestChild(&board,game.mouse_skill, getChildrenStates, free, evalFunc, 0).index;
+                temp[0]=getBestChild(&board,game.mouse_skill, getChildrenStates, free, evalFunc, 0).index;
+
             }
 		}
+		mouseRow=actualMouseRow;
+		mouseCol=actualMouseCol;
+		catRow=actualCatRow;
+		catCol=actualCatCol;
+		makeOriginalBoard(board);
+		/////////////////////////////////////////////////////////////////////////////
+		if(isOriginalTurn==0){
+            switchTurn();
+            switchIsOriginalTurn();
+		}
+		///assigning bad index
+		if(temp[0]<5){
+            badIndex=temp[0];
+		}
+		else{
+            switch(temp[0]){
+            case 85:
+                badIndex=1;
+                break;
+            case 82:
+                badIndex=2;
+                break;
+            case 68:
+                badIndex=3;
+                break;
+            case 76:
+                badIndex=4;
+                break;
+            }
+		}
+
+
 		switch (temp[0]) {
 		case 'L':
-			move(&board, LEFT);
+			moveWork=move(&board, LEFT);
+			break;
+        case 4:
+			moveWork=move(&board, LEFT);
 			break;
 		case 'R':
-			move(&board, RIGHT);
+			moveWork=move(&board, RIGHT);
+			break;
+        case 2:
+			moveWork=move(&board, RIGHT);
+			printf("printing the board level two after choosing to move right\n");
+			printBoard(board);
 			break;
 		case 'U':
-			move(&board, UP);
+			moveWork=move(&board, UP);
+			break;
+        case 1:
+			moveWork=move(&board, UP);
 			break;
 		case 'D':
-			move(&board, DOWN);
+			moveWork=move(&board, DOWN);
+			break;
+		case 3:
+			moveWork=move(&board, DOWN);
 			break;
 		} //end switch
 
+		if(moveWork==0){
+                cntFailedMoves++;
+                switchTurn();
+		}
+		if(moveWork==1){
+            cntFailedMoves=0;
+		}
 		switchTurn();
+		/*IMPORTANT: notice that there are 3 different types of switch
+		turns present: 1: to bring the turn back if it got altered in the
+		recursion, 2: to make the turn stay the same if the move we attempted
+		to do was illegal, and 3: to switch turn at the end of the loop*/
 	}
 	switch (updateGameStatus(board)) {
 	case 0:
@@ -238,8 +280,6 @@ int move(char*** board, int direction) {
 			(*board)[catRow][catCol] = '#';
 			catCol++;
 			(*board)[catRow][catCol] = 'C';
-			printf("printing right direction board in Move function");
-			printBoard(*board);
 			return 1;
 		}
 		if (direction == DOWN && catRow < 6
@@ -301,7 +341,34 @@ void freeBoard(char** board) {
 	free(board);
 
 }
-
+///NEED TO DO: the idea is to get catCol... and return a board w/ the objects in the correct positions
+void makeOriginalBoard(char** board){
+    int i=0,j=0;
+    char temp;
+    for(i=0;i<7;i++){
+        for(j=0;j<7;j++){
+            temp = board[i][j];
+			switch (temp) {
+			case 'M':
+			    if(i!=mouseRow || j!=mouseCol){
+                    board[i][j]="#";
+                    board[mouseRow][mouseCol]="M";
+			    }
+			    break;
+			case 'C':
+			    if(i!=catRow || j!=catCol){
+                    board[i][j]="#";
+                    board[catRow][catCol]="C";
+			    }
+			    break;
+            }
+        }
+    }
+    printf("printing board in makeOriginalBoard\n");
+    printBoard(board);
+    //board[mouseRow][mouseCol]="M";
+    //board[catRow][catCol]="C";
+}
 int updateGameStatus(char** board) {
 //scan board for locations of mouse,cat,cheese
 //update variables accordingly and return 1 if mouse wins, 2 if cat wins

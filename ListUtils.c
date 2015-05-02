@@ -61,6 +61,22 @@ void destroyList(ListRef list, FreeFunc freeData){
 	free(list);
 }
 
+int removeNode(ListRef list, int index){
+    ListRef cur=list;
+    while(index>1){
+        cur=tail(cur);
+        index--;
+    }
+    if(tail(tail(cur))==NULL){
+        cur->next=NULL;
+        return 1;
+    }
+    else{
+        cur->next=cur->next->next;
+        return 1;
+    }
+
+}
 int isEmpty(ListRef list){
 	if (list==NULL)
 		return 1;

@@ -54,4 +54,5 @@ void destroyList(ListRef list, FreeFunc freeData);
  */
 int isEmpty(ListRef list);
 
+int removeNode(ListRef list, int index);
 #endif /* LISTUTILS_H_ */

@@ -53,6 +53,7 @@ struct Child{
 	void* state;
 	struct MiniMaxResult result;
 };
+
 typedef struct Child Child;
 void free_board(char ***board);
 void childFree (void* child);
