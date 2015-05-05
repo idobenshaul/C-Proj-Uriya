@@ -87,3 +87,10 @@ int isEmpty(ListRef list){
 	}
 }
 
+ListRef pop(ListRef list,  FreeFunc freeData) {
+	ListRef temp=tail(list);
+	freeData(list->value);
+	free(list);
+	return temp;
+}
+
