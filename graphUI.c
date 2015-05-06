@@ -52,11 +52,11 @@
 #define CELL_WIDTH 88
 #define PAUSE_LOCATION_Y 10 + 3 * (10 + STATUS_CAPTION_HEIGHT)
 #define PAUSE_LOCATION_X 300
-#define RECONF_MOUSE_LOCATION 130 ... 130 + BOARD_BUTTON_HEIGHT
-#define RECONF_CAT_LOCATION 130 + BOARD_BUTTON_HEIGHT + 50 ... 130 + 2*BOARD_BUTTON_HEIGHT + 50
-#define RESTART_GAME_LOCATION 130 + 2*BOARD_BUTTON_HEIGHT + 100 ... 130 + 3*BOARD_BUTTON_HEIGHT + 100
-#define GOTO_MAIN_MENU_LOCATION 130 + 3*BOARD_BUTTON_HEIGHT + 150 ... 130 + 4*BOARD_BUTTON_HEIGHT + 150
-#define QUIT_PROG_LOCATION 130 + 4*BOARD_BUTTON_HEIGHT + 200 ... 130 + 5*BOARD_BUTTON_HEIGHT + 200
+#define RECONF_MOUSE_LOCATION 130 ... (130 + BOARD_BUTTON_HEIGHT)
+#define RECONF_CAT_LOCATION (130 + BOARD_BUTTON_HEIGHT + 50) ... (130 + 2*BOARD_BUTTON_HEIGHT + 50)
+#define RESTART_GAME_LOCATION (130 + 2*BOARD_BUTTON_HEIGHT + 100) ... (130 + 3*BOARD_BUTTON_HEIGHT + 100)
+#define GOTO_MAIN_MENU_LOCATION (130 + 3*BOARD_BUTTON_HEIGHT + 150) ... (130 + 4*BOARD_BUTTON_HEIGHT + 150)
+#define QUIT_PROG_LOCATION (130 + 4*BOARD_BUTTON_HEIGHT + 200) ... (130 + 5*BOARD_BUTTON_HEIGHT + 200)
 #define PLACE_MOUSE_LOCATION RECONF_MOUSE_LOCATION
 #define PLACE_CAT_LOCATION RECONF_CAT_LOCATION
 #define PLACE_CHEESE_LOCATION RESTART_GAME_LOCATION
@@ -122,6 +122,7 @@
 #define PLACE_CHEESE 21
 #define PLACE_WALL 22
 #define PLACE_EMPTY 23
+#define WARP 24
 
 //macro defines
 #define WindowInitMacro	 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {\
@@ -202,7 +203,7 @@ int displayWidget(void* data) {
 		}
 	} else {
 
-		puts(widget->img_filename);
+		//puts(widget->img_filename);
 		// Apply the image to the display
 		if (SDL_BlitSurface(img, &imgrect, display, &dstrect) != 0) {
 			SDL_FreeSurface(img);
@@ -214,7 +215,7 @@ int displayWidget(void* data) {
 	// Create window surface
 
 	if (SDL_Flip(display) != 0) {
-		printf("ERROR: failed to flip buffer: %s\n", SDL_GetError());
+		//printf("ERROR: failed to flip buffer: %s\n", SDL_GetError());
 		SDL_FreeSurface(img);
 		return 0;
 	}
@@ -869,22 +870,27 @@ int openGameWindow(int gameNum) {
 					PauseMacro;
 				} else if (pause
 						&& e.button.x > 20&& e.button.x<20+BOARD_BUTTON_WIDTH) {
+					puts("board button");
+					printf("%d\n", e.button.y);
 					switch (e.button.y) {
-					case PLACE_MOUSE_LOCATION:
-						action = PLACE_MOUSE;
+					case RECONF_MOUSE_LOCATION:
+						action = RECONF_MOUSE;
 						break;
-					case PLACE_CAT_LOCATION:
-						action = PLACE_CAT;
+					case RECONF_CAT_LOCATION:
+						action = RECONF_CAT;
+						puts("place cat");
 						break;
-					case PLACE_CHEESE_LOCATION:
-						action = PLACE_CHEESE;
+					case RESTART_GAME_LOCATION:
+						action = RESTART_GAME;
+						puts("place cheese");
 						break;
-					case PLACE_WALL_LOCATION:
-						action = PLACE_WALL;
+					case GOTO_MAIN_MENU_LOCATION:
+						action = BACK;
 						break;
-					case PLACE_EMPTY_LOCATION:
-						action = PLACE_EMPTY;
+					case QUIT_PROG_LOCATION:
+						action = QUIT;
 						break;
+
 					} //end switch
 				}
 
@@ -1719,6 +1725,7 @@ int openEditorWindow(int gameNum) {
 			nonRecDFS(topPanel, displayWidget);
 
 			action = 0;
+			direction = 0;
 		}
 
 		while (SDL_PollEvent(&e) != 0) {
@@ -1770,55 +1777,42 @@ int openEditorWindow(int gameNum) {
 
 			case (SDL_MOUSEBUTTONUP):
 
-				if ((e.button.x > curPos.x + curPos.w)
-						&& (e.button.x < curPos.x + 2 * curPos.w)
-						&& (e.button.y > curPos.y)
-						&& (e.button.y < curPos.y + curPos.h)) {
-					action = MOVE;
-					direction = RIGHT;
-				} else if ((e.button.x > curPos.x - CELL_WIDTH)
-						&& (e.button.x < curPos.x) && (e.button.y > curPos.y)
-						&& (e.button.y < curPos.y + curPos.h)) {
-					action = MOVE;
-					direction = LEFT;
-				} else if ((e.button.x > curPos.x)
-						&& (e.button.x < curPos.x + curPos.w)
-						&& (e.button.y > curPos.y - curPos.h)
-						&& (e.button.y < curPos.y)) {
-					action = MOVE;
-					direction = UP;
-				} else if ((e.button.x > curPos.x)
-						&& (e.button.x < curPos.x + curPos.w)
-						&& (e.button.y > curPos.y + curPos.h)
-						&& (e.button.y < curPos.y + 2 * curPos.h)) {
-					action = MOVE;
-					direction = DOWN;
-				} else if ((e.button.x > getChildWidget(topPanel, 3)->x)
+				if ((e.button.x > SIDE_PANEL_WIDTH)
+						&& (e.button.x < 862)
+						&& (e.button.y > TOP_PANEL_HEIGHT)
+						&& (e.button.y < 662)) {
+					action=WARP;
+					selectedCellCol= (e.button.y-TOP_PANEL_HEIGHT)/CELL_HEIGHT;
+					selectedCellRow= (e.button.x-SIDE_PANEL_WIDTH)/CELL_WIDTH;
+
+				/*} else if ((e.button.x > getChildWidget(topPanel, 3)->x)
 						&& (e.button.x
 								< getChildWidget(topPanel, 3)->x
 										+ SPACE_BUTTON_WIDTH)
 						&& (e.button.y > getChildWidget(topPanel, 3)->y)
 						&& (e.button.y
 								< getChildWidget(topPanel, 3)->y
-										+ SPACE_BUTTON_HEIGHT)) {
-				} else if (e.button.x
-						> 20&& e.button.x < 20 + BOARD_BUTTON_WIDTH) {
+										+ SPACE_BUTTON_HEIGHT)) {*/
+				} else if (e.button.x > 20
+						&& e.button.x < (20 + BOARD_BUTTON_WIDTH)) {
+					printf ("y: %d\n", e.button.y);
 					switch (e.button.y) {
-					case RECONF_MOUSE_LOCATION:
+
+					case PLACE_MOUSE_LOCATION:
 						action = PLACE_MOUSE;
+						puts ("place mouse");
 						break;
-					case RECONF_CAT_LOCATION:
-						action = PLACE_CAT;
+					case PLACE_CAT_LOCATION:
 						puts ("place cat");
+						action = PLACE_CAT;
 						break;
-					case RESTART_GAME_LOCATION:
+					case PLACE_CHEESE_LOCATION:
 						action = PLACE_CHEESE;
-						puts ("place cheese");
 						break;
-					case GOTO_MAIN_MENU_LOCATION:
+					case PLACE_WALL_LOCATION:
 						action = PLACE_WALL;
 						break;
-					case QUIT_PROG_LOCATION:
+					case PLACE_EMPTY_LOCATION:
 						action = PLACE_EMPTY;
 						break;
 					} //end switch
@@ -1846,9 +1840,9 @@ int openEditorWindow(int gameNum) {
 			updateGrid(0, 'M', 'M');
 			break;
 		case PLACE_EMPTY:
-					board[selectedCellRow][selectedCellCol] = '#';
-					updateGrid(0, '#', '#');
-					break;
+			board[selectedCellRow][selectedCellCol] = '#';
+			updateGrid(0, '#', '#');
+			break;
 		case QUIT:
 			puts("quit");
 			SDL_Quit();
@@ -1867,7 +1861,8 @@ int openEditorWindow(int gameNum) {
 					|| (pink->y == TOP_PANEL_HEIGHT + 6 * CELL_HEIGHT
 							&& direction == DOWN)) {
 				break;
-			} else {
+			} else { // move is possible
+				puts ("change");
 				prevCol = selectedCellCol;
 				prevRow = selectedCellRow;
 				switch (direction) {
@@ -1883,15 +1878,24 @@ int openEditorWindow(int gameNum) {
 				case DOWN:
 					selectedCellRow++;
 					break;
-
 				}
 				printf("%c", board[selectedCellRow][selectedCellCol]);
 				updateGrid(direction, board[selectedCellRow][selectedCellCol],
 						board[prevRow][prevCol]);
-
-
-				direction = 0;
 			}
+			break;
+		case WARP:
+
+			pink->y= TOP_PANEL_HEIGHT+selectedCellCol*CELL_HEIGHT;
+			pink->x=SIDE_PANEL_WIDTH+selectedCellRow*CELL_WIDTH;
+
+			puts ("warp");
+			printf ("%d\n", pink->y);
+			printf ("%d\n", pink->x);
+
+			updateGrid(direction, board[prevRow][prevCol],
+									board[prevRow][prevCol]);
+
 			break;
 		} //end switch
 
