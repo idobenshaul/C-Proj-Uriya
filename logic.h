@@ -35,8 +35,8 @@ int checkBoard(char** board);
 int saveGame(char** board, int gamenum);
 void makeOriginalBoard(char** board);
 void switchIsOriginalTurn();
-int cntFailedMoves=0;
-int badIndex;
+//int cntFailedMoves=0;
+//int badIndex;
 
 struct gameOptions {
 	int cat_human;

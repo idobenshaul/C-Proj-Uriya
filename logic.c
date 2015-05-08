@@ -84,13 +84,20 @@ ListRef getChildrenStates (void* state){
         updateGameStatus(curState);
         //printf("printing the %d'th direction before move!!\n", i+1);
         //printBoard(curState);
-        move(&curState,i+1);
-        printf("printing the %d'th direction\n", i+1);
-        printBoard(curState);
         childs[i]=(Child*)malloc(sizeof(Child));
-        childs[i]->state=curState;
-        childs[i]->result.value=evalFunc(&(childs[i]->state));
-        childs[i]->result.index=i+1;
+        if(move(&curState,i+1)==1){
+            printf("printing the %d'th direction\n", i+1);
+            printBoard(curState);
+            //childs[i]=(Child*)malloc(sizeof(Child));
+            childs[i]->state=curState;
+            childs[i]->result.value=evalFunc(&(childs[i]->state));
+            childs[i]->result.index=i+1;
+            //states[i]=(Child**)(&childs[i]);
+        }
+        else{
+
+            childs[i]->state=NULL;
+        }
         states[i]=(Child**)(&childs[i]);
     }
 
@@ -99,7 +106,7 @@ ListRef getChildrenStates (void* state){
     updateGameStatus(*board);
     for(i=0;i<4;i++){
         Child a=*(*(states[i]));
-        if(a.result.index!=badIndex || cntFailedMoves==0){
+        if(a.state!=NULL){
             append(children, (Child*)*(states[i]));
             printf("now printing children, %d\n",i+1);
             printf("%d\n",((Child*)*(states[i]))->result.value);
@@ -125,11 +132,30 @@ void switchIsOriginalTurn(){
         isOriginalTurn=0;
     }
 }
-
+struct MiniMaxResult alphabeta(node, depth, α, β, maximizingPlayer){
+      if depth = 0 or node is a terminal node
+          return the heuristic value of node
+      if maximizingPlayer
+          v := -∞
+          for each child of node
+              v := max(v, alphabeta(child, depth - 1, α, β, FALSE))
+              α := max(α, v)
+              if β ≤ α
+                  break (* β cut-off *)
+          return v
+      else
+          v := ∞
+          for each child of node
+              v := min(v, alphabeta(child, depth - 1, α, β, TRUE))
+              β := min(β, v)
+              if β ≤ α
+                  break (* α cut-off *)
+          return v
+}
 int main(int argc, char* args[]) {
 
 	setvbuf(stdout, NULL, _IONBF, 0);
-	gameOptions game = { 0, 1, 2, 0 };
+	gameOptions game = { 0, 1, 7, 0 };
     int moveWork=-17;
 	char temp[7];
 	char** board; //7*7 board
@@ -151,7 +177,17 @@ int main(int argc, char* args[]) {
 		} //end human move
 		else { //machine move
 			   //TODO - implement machine move - the result should be put into temp[0] as a character implying direction - L/R/D/U
+            /////////////////////////////////////////////////////////
+            if(strcmp(turn, "cat")==0){
+                temp[0]=getBestChild(&board,game.cat_skill, getChildrenStates, free, evalFunc, 1).index;
+            }
+            else{//(strcmp(turn, "mouse")==0)
+                temp[0]=getBestChild(&board,game.mouse_skill, getChildrenStates, free, evalFunc, 0).index;
+            }
 
+
+            ///////////////////////////////////////////
+            /*
             if (!game.cat_human && !game.mouse_human){
                 if(strcmp(turn, "cat")){
                     temp[0]=getBestChild(&board,game.cat_skill, getChildrenStates, free, evalFunc, 1).index;
@@ -169,7 +205,7 @@ int main(int argc, char* args[]) {
             else{//mouse is Comp, cat is human, Comp turn
                 temp[0]=getBestChild(&board,game.mouse_skill, getChildrenStates, free, evalFunc, 0).index;
 
-            }
+            }*/
 		}
 		mouseRow=actualMouseRow;
 		mouseCol=actualMouseCol;
@@ -182,10 +218,10 @@ int main(int argc, char* args[]) {
             switchIsOriginalTurn();
 		}
 		///assigning bad index
-		if(temp[0]<5){
+		/*if(temp[0]<5){
             badIndex=temp[0];
 		}
-		else{
+		else{//person entered, why do we need it ?
             switch(temp[0]){
             case 85:
                 badIndex=1;
@@ -200,48 +236,43 @@ int main(int argc, char* args[]) {
                 badIndex=4;
                 break;
             }
-		}
+		}*/
 
 
 		switch (temp[0]) {
 		case 'L':
-			moveWork=move(&board, LEFT);
-			break;
         case 4:
 			moveWork=move(&board, LEFT);
 			break;
 		case 'R':
-			moveWork=move(&board, RIGHT);
-			break;
         case 2:
 			moveWork=move(&board, RIGHT);
-			printf("printing the board level two after choosing to move right\n");
-			printBoard(board);
 			break;
+			//printf("printing the board level two after choosing to move right\n");
+			//printBoard(board);
+
 		case 'U':
-			moveWork=move(&board, UP);
-			break;
         case 1:
 			moveWork=move(&board, UP);
 			break;
+
 		case 'D':
+        case 3:
 			moveWork=move(&board, DOWN);
 			break;
-		case 3:
-			moveWork=move(&board, DOWN);
-			break;
+
 		} //end switch
 
 		if(moveWork==0){
-                cntFailedMoves++;
+                //cntFailedMoves++;
                 switchTurn();
 		}
-		if(moveWork==1){
+		/*if(moveWork==1){
             cntFailedMoves=0;
-		}
+		}*/
 		switchTurn();
-		/*IMPORTANT: notice that there are 3 different types of switch
-		turns present: 1: to bring the turn back if it got altered in the
+		///IMPORTANT: notice that there are 3 different types of switch turns present:
+		/* 1: to bring the turn back if it got altered in the
 		recursion, 2: to make the turn stay the same if the move we attempted
 		to do was illegal, and 3: to switch turn at the end of the loop*/
 	}
