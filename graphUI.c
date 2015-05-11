@@ -62,7 +62,7 @@
 #define PLACE_CHEESE_LOCATION RESTART_GAME_LOCATION
 #define PLACE_WALL_LOCATION GOTO_MAIN_MENU_LOCATION
 #define PLACE_EMPTY_LOCATION QUIT_PROG_LOCATION
-#define CAPTION_HEIGHT 50
+#define CAPTION_HEIGHT 43
 #define CAPTION_WIDTH 300
 #define MOUSE_LOCATION 1629
 #define CAT_LOCATION 1541
@@ -157,6 +157,8 @@ WidgetRef mouse, cat, pink; //Widgets for quick board updating
 int humanSelect(int player);
 int openGameWindow(int gameNum);
 int skillSelect(int player);
+void updateGridWarp(char** board, int prevRow, int prevCol, int newRow,
+		int newCol);
 SDL_Surface * display;
 
 WidgetRef getChildWidget(TreeRef root, int childNum) {
@@ -424,9 +426,10 @@ int main() {
 	//findShortestPaths();
 	//openGameWindow(1);
 	openEditorWindow(1);
+	//SaveErrorMsgWindow(3);
 }
 
-int main5(int argc, char* args[]) {
+int main3(int argc, char* args[]) {
 
 	if (argc > 1) {
 		if (!strcmp(args[1], "-console")) {
@@ -497,7 +500,7 @@ TreeRef boardToTree(char** board) {
 	return temp;
 }
 
-void updateGrid(int direction, char newCellContent, char prevCellContent) {
+void updateGridAdj(int direction, char newCellContent, char prevCellContent) {
 	puts("update");
 	WidgetRef temp;
 	int imgLoc;
@@ -652,7 +655,7 @@ int openGameWindow(int gameNum) {
 	//loading default game world #1
 	char** board = loadGame(gameNum);
 	//$$$ Check including it inside
-	updateGameStatus(board);
+	updateBoardStatus(board);
 
 	//parsing gameOption...ארקק
 	//TODO
@@ -936,7 +939,7 @@ int openGameWindow(int gameNum) {
 				break;
 			} else if (move(&board, direction)) {
 				puts("move");
-				updateGrid(direction, '#', '#');
+				updateGridAdj(direction, '#', '#');
 				switchTurn();
 				turnCounter++;
 			}
@@ -1001,7 +1004,7 @@ int openGameWindow(int gameNum) {
 				BIG_MSG_WIDTH - 10, BIG_MSG_HEIGHT, 0, "Buttons.bmp", ""));
 
 			}
-			switch (updateGameStatus(board)) {
+			switch (updateBoardStatus(board)) {
 			case 1:
 				puts("mouse wins");
 				gameOver = 1;
@@ -1640,7 +1643,8 @@ int humanSelect(int player) {
 int openEditorWindow(int gameNum) {
 
 	int i = 1, action = -1, direction = 0, selectedCellRow = 0,
-			selectedCellCol = 0, prevCol = 0, prevRow = 0;
+			selectedCellCol = 0, prevCol = 0, prevRow = 0, err = 0;
+	//		cheeseCol, cheeseRow, catRow, catCol, mouseRow,mouseCol;
 
 	if (game.cat_human == -1 || game.mouse_human == -1) {
 		return -1;
@@ -1649,7 +1653,7 @@ int openEditorWindow(int gameNum) {
 	char** board = loadGame(gameNum);
 	sprintf(turn, "editor");
 	//$$$ Check including it inside
-	updateGameStatus(board);
+	updateBoardStatus(board);
 
 	//parsing gameOption...
 	//TODO
@@ -1671,24 +1675,12 @@ int openEditorWindow(int gameNum) {
 						BOARD_BUTTON_WIDTH, BOARD_BUTTON_HEIGHT, 0,
 						"Buttons2.bmp", ""));
 	}
-	/*
-	 TreeRef frozenSidePanel = newTree(
-	 createWidget(0, TOP_PANEL_HEIGHT, PAUSED_SIDE_PANEL_LOCATION, 0,
-	 SIDE_PANEL_WIDTH, GRID_HEIGHT, 0, "Board.bmp", "hgh"));
-	 for (i = 0; i < 5; i++) {
-	 insertChild(frozenSidePanel,
-	 createWidget(20, 130 + BOARD_BUTTON_HEIGHT * i + 50 * i,
-	 BOARD_BUTTON_WIDTH, (i + 5) * BOARD_BUTTON_HEIGHT,
-	 BOARD_BUTTON_WIDTH, BOARD_BUTTON_HEIGHT, 0, "Buttons2.bmp",
-	 ""));
-	 }
-	 */
 
 	TreeRef topPanel = newTree(
 			createWidget(0, 310, 0, 0, 0, 0, 0, NULL, "hgh"));
-	for (i = 0; i < 3; i++) {
-		insertChild(topPanel, createWidget(10 + i * 300, 50, CAPTION_LOCATION_X,
-		LOAD_GAME_CAPTION_LOCATION_Y + CAPTION_HEIGHT,
+	for (i = 7; i < 13; i++) {
+		insertChild(topPanel, createWidget(10 + (i - 10) * 300, 50, 0,
+		BOARD_BUTTON_HEIGHT * i,
 		BOARD_BUTTON_WIDTH - 1,
 		BOARD_BUTTON_HEIGHT + 2, 0, "Buttons2.bmp", "hgh"));
 	}
@@ -1698,31 +1690,26 @@ int openEditorWindow(int gameNum) {
 	getChildWidget(topPanel, 3)->srcY = 0 + BOARD_BUTTON_HEIGHT + 2;
 
 	//nonRecDFS(topPanel, displayWidget);
-	nonRecDFS(boardToTree(board), displayWidget);
 	//nonRecDFS(sidePanel, printWidget);
 	//nonRecDFS(sidePanel, displayWidget);
-	nonRecDFS(sidePanel, displayWidget);
 	//SDL_Delay(5000);
 
-	SDL_Event e;
+	nonRecDFS(boardToTree(board), displayWidget);
+	nonRecDFS(sidePanel, displayWidget);
+	nonRecDFS(topPanel, displayWidget);
 
-	SDL_Rect curPos;
-	curPos.x = TOP_PANEL_HEIGHT;
-	curPos.y = SIDE_PANEL_WIDTH;
-	curPos.w = CELL_WIDTH;
-	curPos.h = CELL_HEIGHT;
-
+	//init pink cell
 	pink = createWidget(SIDE_PANEL_WIDTH, TOP_PANEL_HEIGHT, PINK_CELL_X,
 	PINK_CELL_Y,
 	CELL_WIDTH + 2, CELL_HEIGHT - 4, 0, "Board.bmp", "");
 
 	displayWidget(pink);
+
+	SDL_Event e;
 	while (action != QUIT) {
 
 		if (action != 0) {
 			puts("refreshing");
-
-			nonRecDFS(topPanel, displayWidget);
 
 			action = 0;
 			direction = 0;
@@ -1770,6 +1757,10 @@ int openEditorWindow(int gameNum) {
 				case (SDLK_w):
 					action = PLACE_WALL;
 					break;
+				case (SDLK_s):
+					action = SAVE_GAME;
+					break;
+
 				default:
 					break;
 				} //end switch-keyup
@@ -1777,33 +1768,42 @@ int openEditorWindow(int gameNum) {
 
 			case (SDL_MOUSEBUTTONUP):
 
-				if ((e.button.x > SIDE_PANEL_WIDTH)
-						&& (e.button.x < 862)
+				if ((e.button.x > SIDE_PANEL_WIDTH) && (e.button.x < 862)
 						&& (e.button.y > TOP_PANEL_HEIGHT)
 						&& (e.button.y < 662)) {
-					action=WARP;
-					selectedCellCol= (e.button.y-TOP_PANEL_HEIGHT)/CELL_HEIGHT;
-					selectedCellRow= (e.button.x-SIDE_PANEL_WIDTH)/CELL_WIDTH;
+					action = WARP;
+					selectedCellRow = (e.button.y - TOP_PANEL_HEIGHT)
+							/ CELL_HEIGHT;
+					selectedCellCol = (e.button.x - SIDE_PANEL_WIDTH)
+							/ CELL_WIDTH;
+					printf("row %d, col %d\n", selectedCellRow,
+							selectedCellCol);
 
-				/*} else if ((e.button.x > getChildWidget(topPanel, 3)->x)
+				} else if ((e.button.x > 10)
 						&& (e.button.x
-								< getChildWidget(topPanel, 3)->x
+								< 10
 										+ SPACE_BUTTON_WIDTH)
-						&& (e.button.y > getChildWidget(topPanel, 3)->y)
+						&& (e.button.y > getChildWidget(topPanel, 1)->y)
 						&& (e.button.y
-								< getChildWidget(topPanel, 3)->y
-										+ SPACE_BUTTON_HEIGHT)) {*/
-				} else if (e.button.x > 20
+								< getChildWidget(topPanel, 1)->y
+										+ SPACE_BUTTON_HEIGHT)) {
+					puts ("save");
+					action=SAVE_GAME;
+
+				}
+
+				else if (e.button.x > 20
 						&& e.button.x < (20 + BOARD_BUTTON_WIDTH)) {
-					printf ("y: %d\n", e.button.y);
+
+					printf("y: %d\n", e.button.y);
 					switch (e.button.y) {
 
 					case PLACE_MOUSE_LOCATION:
 						action = PLACE_MOUSE;
-						puts ("place mouse");
+						puts("place mouse");
 						break;
 					case PLACE_CAT_LOCATION:
-						puts ("place cat");
+						puts("place cat");
 						action = PLACE_CAT;
 						break;
 					case PLACE_CHEESE_LOCATION:
@@ -1823,26 +1823,142 @@ int openEditorWindow(int gameNum) {
 
 		} //end pollevent
 		switch (action) {
+		case SAVE_GAME:
+			SDL_Quit();
+			err = checkBoard(board);
+			printf("%d\n", err);
+			if (err) {
+
+				SaveErrorMsgWindow(err);
+
+			} //end switch checkboard
+			else {
+				sprintf(turn, "cat");
+				max_turns = 20;
+				saveGame(board, worldSelect(SAVE_GAME));
+				sprintf(turn, "editor");
+			}
+			//reopen editor window
+			WindowInitMacro
+			;
+			display = SDL_SetVideoMode(826, 662, 0,
+			SDL_HWSURFACE | SDL_DOUBLEBUF);
+
+			nonRecDFS(boardToTree(board), displayWidget);
+			nonRecDFS(sidePanel, displayWidget);
+			nonRecDFS(topPanel, displayWidget);
+			displayWidget(pink);
+
+			break;
 		case PLACE_CHEESE:
+			puts("place cheese");
+			if (selectedCellRow == cheeseRow && selectedCellCol == cheeseCol) {
+				break;
+			}
+
+			switch (board[selectedCellRow][selectedCellCol]) {
+			case 'C':
+				catCol = -1;
+				catRow = -1;
+				break;
+			case 'M':
+				mouseCol = -1;
+				mouseRow = -1;
+				break;
+
+			}
 			board[selectedCellRow][selectedCellCol] = 'P';
-			updateGrid(0, 'P', 'P');
+			if (cheeseRow > -1 && cheeseCol > -1) {
+				printf("cheeseRow %d %d", cheeseRow, cheeseCol);
+				board[cheeseRow][cheeseCol] = '#';
+			}
+			updateGridWarp(board, cheeseRow, cheeseCol, selectedCellRow,
+					selectedCellCol);
+
+			cheeseRow = selectedCellRow;
+			cheeseCol = selectedCellCol;
 			break;
+
 		case PLACE_WALL:
-			board[selectedCellRow][selectedCellCol] = 'W';
-			updateGrid(0, 'W', 'W');
-			break;
-		case PLACE_CAT:
-			board[selectedCellRow][selectedCellCol] = 'C';
-			updateGrid(0, 'C', 'C');
-			break;
-		case PLACE_MOUSE:
-			board[selectedCellRow][selectedCellCol] = 'M';
-			updateGrid(0, 'M', 'M');
-			break;
 		case PLACE_EMPTY:
-			board[selectedCellRow][selectedCellCol] = '#';
-			updateGrid(0, '#', '#');
+			switch (board[selectedCellRow][selectedCellCol]) {
+			case 'C':
+				catCol = -1;
+				catRow = -1;
+				break;
+			case 'M':
+				mouseCol = -1;
+				mouseRow = -1;
+				break;
+			case 'P':
+				cheeseCol = -1;
+				cheeseRow = -1;
+				break;
+			}
+			if (action == PLACE_EMPTY) {
+				board[selectedCellRow][selectedCellCol] = '#';
+			} else {
+				board[selectedCellRow][selectedCellCol] = 'W';
+			}
+			updateGridWarp(board, -1, -1, selectedCellRow, selectedCellCol);
+			//updateGridAdj(0, 'W', 'W');
 			break;
+
+		case PLACE_CAT:
+
+			puts("place cat");
+			if (selectedCellRow == catRow && selectedCellCol == catCol) {
+				break;
+			}
+
+			switch (board[selectedCellRow][selectedCellCol]) {
+			case 'P':
+				cheeseCol = -1;
+				cheeseRow = -1;
+				break;
+			case 'M':
+				mouseCol = -1;
+				mouseRow = -1;
+				break;
+			}
+			board[selectedCellRow][selectedCellCol] = 'C';
+			if (catRow > -1 && catCol > -1) {
+				board[catRow][catCol] = '#';
+			}
+			updateGridWarp(board, catRow, catCol, selectedCellRow,
+					selectedCellCol);
+
+			catRow = selectedCellRow;
+			catCol = selectedCellCol;
+			break;
+
+		case PLACE_MOUSE:
+
+			if (selectedCellRow == mouseRow && selectedCellCol == mouseCol) {
+				break;
+			}
+
+			switch (board[selectedCellRow][selectedCellCol]) {
+			case 'C':
+				catCol = -1;
+				catRow = -1;
+				break;
+			case 'M':
+				mouseCol = -1;
+				mouseRow = -1;
+				break;
+			}
+			board[selectedCellRow][selectedCellCol] = 'M';
+			if (mouseRow > -1 && mouseCol > -1) {
+				board[mouseRow][mouseCol] = '#';
+			}
+
+			updateGridWarp(board, mouseRow, mouseCol, selectedCellRow,
+					selectedCellCol);
+			mouseRow = selectedCellRow;
+			mouseCol = selectedCellCol;
+			break;
+
 		case QUIT:
 			puts("quit");
 			SDL_Quit();
@@ -1862,7 +1978,7 @@ int openEditorWindow(int gameNum) {
 							&& direction == DOWN)) {
 				break;
 			} else { // move is possible
-				puts ("change");
+				puts("change");
 				prevCol = selectedCellCol;
 				prevRow = selectedCellRow;
 				switch (direction) {
@@ -1880,22 +1996,16 @@ int openEditorWindow(int gameNum) {
 					break;
 				}
 				printf("%c", board[selectedCellRow][selectedCellCol]);
-				updateGrid(direction, board[selectedCellRow][selectedCellCol],
+				updateGridAdj(direction,
+						board[selectedCellRow][selectedCellCol],
 						board[prevRow][prevCol]);
 			}
 			break;
 		case WARP:
-
-			pink->y= TOP_PANEL_HEIGHT+selectedCellCol*CELL_HEIGHT;
-			pink->x=SIDE_PANEL_WIDTH+selectedCellRow*CELL_WIDTH;
-
-			puts ("warp");
-			printf ("%d\n", pink->y);
-			printf ("%d\n", pink->x);
-
-			updateGrid(direction, board[prevRow][prevCol],
-									board[prevRow][prevCol]);
-
+			updateGridWarp(board, prevRow, prevCol, selectedCellRow,
+					selectedCellCol);
+			prevCol = selectedCellCol;
+			prevRow = selectedCellRow;
 			break;
 		} //end switch
 
@@ -1904,4 +2014,171 @@ int openEditorWindow(int gameNum) {
 	SDL_Quit();
 
 	return 1;
+}
+
+void updateGridWarp(char** board, int prevRow, int prevCol, int newRow,
+		int newCol) {
+	puts("updateGridWarp");
+	printBoard(board);
+	WidgetRef temp = pink;
+
+//draw prevCol
+
+//printf("newrow %d newcol %d %c \n ", newRow, newCol, board[newRow][newCol]);
+
+	if (prevCol > -1 && prevRow > -1) {
+
+		//set prevLocation
+
+		pink->y = TOP_PANEL_HEIGHT + prevRow * CELL_HEIGHT;
+		pink->x = SIDE_PANEL_WIDTH + prevCol * CELL_WIDTH;
+
+		//draw empty first
+		temp->srcY = TOP_PANEL_HEIGHT;
+		temp->srcX = SIDE_PANEL_WIDTH;
+		displayWidget(temp);
+		//draw actual
+		temp->width -= 14;
+		switch (board[prevRow][prevCol]) {
+		case 'C':
+			temp->x += 3;
+			temp->srcX = CAT_LOCATION - 2;
+			temp->srcY = 0;
+			displayWidget(temp);
+			temp->x -= 3;
+			break;
+		case 'M':
+			temp->x += 3;
+			temp->srcX = MOUSE_LOCATION - 2;
+			temp->srcY = 0;
+			displayWidget(temp);
+			temp->x -= 3;
+			break;
+		case 'P':
+			temp->x += 3;
+			temp->srcX = CHEESE_LOCATION;
+			temp->srcY = 0;
+			displayWidget(temp);
+			temp->x -= 3;
+			break;
+		case 'W':
+			temp->x += 10;
+			temp->srcX = WALL_LOCATION;
+			temp->srcY = 0;
+			displayWidget(temp);
+			temp->x -= 10;
+			break;
+
+		} //end switch prevcell content
+		temp->width += 14;
+	}
+//warp to new location
+	pink->y = TOP_PANEL_HEIGHT + newRow * CELL_HEIGHT;
+	pink->x = SIDE_PANEL_WIDTH + newCol * CELL_WIDTH;
+
+// print new cell
+	/*
+	 printf ("row %d col %d %c \n " , newRow, newCol, board[newRow][newCol] );
+	 */
+	temp->srcY = TOP_PANEL_HEIGHT;
+	temp->srcX = SIDE_PANEL_WIDTH;
+	displayWidget(temp);
+
+	temp->srcY = YELLOW_Y;
+	switch (board[newRow][newCol]) {
+	case 'C':
+		temp->width -= 7;
+		temp->x += 3;
+		temp->srcX = CAT_LOCATION - 2;
+		break;
+	case 'M':
+		temp->width -= 7;
+		temp->x += 3;
+		temp->srcX = MOUSE_LOCATION - 2;
+		break;
+	case 'P':
+		temp->width -= 7;
+		temp->x += 3;
+		temp->srcX = CHEESE_LOCATION;
+		break;
+	case 'W':
+		temp->width -= 14;
+		temp->x += 10;
+		temp->srcX = WALL_LOCATION;
+		break;
+	default:
+		temp->srcX = PINK_CELL_X;
+		temp->srcY = PINK_CELL_Y;
+		break;
+	} //end switch newcell content
+
+	displayWidget(temp);
+
+//fix widths and xs
+	switch (board[newRow][newCol]) {
+	case 'C':
+	case 'M':
+	case 'P':
+		temp->width += 7;
+		temp->x -= 3;
+		break;
+	case 'W':
+		temp->width += 14;
+		temp->x -= 10;
+		break;
+	}
+}
+
+int SaveErrorMsgWindow(int err) {
+	int i, action;
+	SDL_Event e;
+	WindowInitMacro;
+	display = SDL_SetVideoMode(500, 300, 0, SDL_HWSURFACE | SDL_DOUBLEBUF);
+	TreeRef t2 = newTree(createWidget(0, 0, 0, 0, 600, 800, 0, NULL, "hgh"));
+	insertChild(t2, createWidget(110, 50,
+	CAPTION_LOCATION_X, 23 + (CAPTION_HEIGHT - 2) * 7 - 8,
+	CAPTION_WIDTH - 50, CAPTION_HEIGHT, 0, "Buttons2.bmp", ""));
+	insertChild(t2, createWidget(110, 120,
+	CAPTION_LOCATION_X, 23 + (CAPTION_HEIGHT - 2) * (7 + err) - 8,
+	CAPTION_WIDTH - 50, CAPTION_HEIGHT, 0, "Buttons2.bmp", ""));
+
+	insertChild(t2, createWidget(100, 200, 4, BUTTON_HEIGHT * 7 - 8,
+	BUTTON_WIDTH, BUTTON_HEIGHT, 1, "Buttons.bmp", ""));
+
+	nonRecDFS(t2, displayWidget);
+	while (action != QUIT) {
+
+		if (action != 0) {
+			puts("refreshing");
+
+			action = 0;
+		}
+
+		while (SDL_PollEvent(&e) != 0) {
+			switch (e.type) {
+			case (SDL_QUIT):
+				action = BACK;
+				break;
+			case (SDL_KEYUP):
+				if (e.key.keysym.sym == SDLK_ESCAPE) {
+					action = BACK;
+				}
+				break; //break keyup
+			case (SDL_MOUSEBUTTONUP):
+				if (e.button.x > 100&& e.button.x < 100 + BUTTON_WIDTH
+				&& e.button.y > 200
+				&& e.button.y < 200 + BOARD_BUTTON_HEIGHT) {
+					action = BACK;
+				} //end if
+				break; //break mouseup
+			} //end switch e-type
+		} //end pollevent
+		if (action == BACK) {
+			SDL_Quit();
+			return 1;
+			break;
+		} //end if
+
+	} //while action
+	return 0;
 }
