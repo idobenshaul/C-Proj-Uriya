@@ -1,4 +1,9 @@
-
+/*
+ * BFS.c
+ *
+ *  Created on: May 5, 2015
+ *      Author: uriyabartal
+ */
 #include "queue.h"
 #include "logic.h"
 #include <stdlib.h>
@@ -14,6 +19,16 @@ typedef struct Slot* SlotRef;
 
 int visited[7][7];
 int dist[7][7];
+
+int main() {
+	char** board = loadGame(3);
+	updateBoardStatus(board);
+
+	printf("%d", findShortestPath(&board, mouseRow, mouseCol, cheeseRow+1, cheeseCol));
+
+	return 0;
+}
+
 
 int findShortestPath(char*** board, int srcRow, int srcCol, int destRow,
 		int destCol) {
@@ -33,6 +48,7 @@ int findShortestPath(char*** board, int srcRow, int srcCol, int destRow,
 	visited[srcRow][srcCol] = 1;
 
 	while (!isEmpty(q)) {
+
 
 		slot = peek(q);
 
@@ -65,7 +81,7 @@ int findShortestPath(char*** board, int srcRow, int srcCol, int destRow,
 					//printSlotList((ListRef)q);
 					visited[newRow][newCol] = 1;
 					dist[newRow][newCol] = dist[prevRow][prevCol] + 1;
-					//printVisited();
+					printVisited();
 					if (newRow==destRow && newCol==destCol){
 						return dist[newRow][newCol];
 					}
@@ -83,6 +99,9 @@ int findShortestPath(char*** board, int srcRow, int srcCol, int destRow,
 		q = dequeue(q, free);
 	} //end while
 	puts ("BFS Finished");
+
+	//destination is unreachable
+	return 1000;
 }
 
 
