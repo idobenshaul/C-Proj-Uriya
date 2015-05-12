@@ -26,7 +26,7 @@ int updateGameStatus(char** board);
 void printBoard(char** board);
 void copyArray(char *** original, char***copy);
 char turn[7];//toggle cat's turn.
-int isOriginalTurn=1;
+int isOriginalTurn;
 int max_turns ; //max num of turns.
 int turnCounter;
 int evalFunc(void* state);
@@ -35,8 +35,12 @@ int checkBoard(char** board);
 int saveGame(char** board, int gamenum);
 void makeOriginalBoard(char** board);
 void switchIsOriginalTurn();
+int isLegalMove(char*** board, int srcRow, int srcCol, int direction);
+findNeighborBFS(char***board, int mouseR,int mouseC,int cheeseR,int cheeseC);
 //int cntFailedMoves=0;
 //int badIndex;
+int visited[7][7];
+int dist[7][7];
 
 struct gameOptions {
 	int cat_human;
