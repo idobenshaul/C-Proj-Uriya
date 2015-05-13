@@ -29,6 +29,16 @@ int main() {
 }*/
 
 
+int main() {
+	char** board = loadGame(3);
+	updateBoardStatus(board);
+
+	printf("%d", findShortestPath(&board, mouseRow, mouseCol, cheeseRow+1, cheeseCol));
+
+	return 0;
+}
+
+
 int findShortestPath(char*** board, int srcRow, int srcCol, int destRow,
 		int destCol) {
 	int direction, cnt = 0, i, j;
@@ -87,12 +97,19 @@ int findShortestPath(char*** board, int srcRow, int srcCol, int destRow,
 					//printSlotList((ListRef)q);
 					visited[newRow][newCol] = 1;
 					dist[newRow][newCol] = dist[prevRow][prevCol] + 1;
+<<<<<<< HEAD
 					//printVisited();
 					//printf("Now I am waiting for input:\n");
 					//scanf("");
 					//if (newRow==destRow && newCol==destCol){
 					//	return dist[newRow][newCol];
 					//}
+=======
+					printVisited();
+					if (newRow==destRow && newCol==destCol){
+						return dist[newRow][newCol];
+					}
+>>>>>>> ae0cc88eeaa32c526beff2b7fe7c75bd944b2cdb
 
 				}
 
@@ -109,6 +126,13 @@ int findShortestPath(char*** board, int srcRow, int srcCol, int destRow,
 	} //end while
 
 	puts ("BFS Finished");
+<<<<<<< HEAD
+=======
+
+	//destination is unreachable
+	return 1000;
+}
+>>>>>>> ae0cc88eeaa32c526beff2b7fe7c75bd944b2cdb
 
 	//destination is unreachable
 	return 1000;

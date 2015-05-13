@@ -17,14 +17,15 @@
 
 //menu defines
 #define BUTTON_WIDTH 270
-#define BUTTON_HEIGHT 76
+#define BUTTON_HEIGHT 67
+#define BUTTON_H_GAP 7
 #define SELECTED BUTTON_WIDTH*2
 #define SELECTED_WORLD -BUTTON_WIDTH-5
 #define NEW_GAME_LOCATION 200 ... 200+BUTTON_HEIGHT
-#define LOAD_GAME_LOCATION 10*1+200+1*BUTTON_HEIGHT ...10*1+200+2*BUTTON_HEIGHT
-#define CREATE_GAME_LOCATION 10*2+200+2*BUTTON_HEIGHT ... 10*2+200+3*BUTTON_HEIGHT
-#define EDIT_GAME_LOCATION 10*3+200+3*BUTTON_HEIGHT ... 10*3+200+4*BUTTON_HEIGHT
-#define QUIT_LOCATION 10*4+200+4*BUTTON_HEIGHT ... 10*4+200+5*BUTTON_HEIGHT
+#define LOAD_GAME_LOCATION 10*1+200+1*(BUTTON_HEIGHT+BUTTON_H_GAP) ...10*1+200+2*(BUTTON_HEIGHT+BUTTON_H_GAP)
+#define CREATE_GAME_LOCATION 10*2+200+2*(BUTTON_HEIGHT+BUTTON_H_GAP) ... 10*2+200+3*(BUTTON_HEIGHT+BUTTON_H_GAP)
+#define EDIT_GAME_LOCATION 10*3+200+3*(BUTTON_HEIGHT+BUTTON_H_GAP) ... 10*3+200+4*(BUTTON_HEIGHT+BUTTON_H_GAP)
+#define QUIT_LOCATION 10*4+200+4*(BUTTON_HEIGHT+BUTTON_H_GAP) ... 10*4+200+5*(BUTTON_HEIGHT+BUTTON_H_GAP)
 #define HUMAN_LOCATION NEW_GAME_LOCATION
 #define MACHINE_LOCATION LOAD_GAME_LOCATION
 #define U_SELECT_BACK_LOCATION CREATE_GAME_LOCATION
@@ -50,29 +51,38 @@
 #define SIDE_PANEL_WIDTH 207
 #define CELL_HEIGHT 78
 #define CELL_WIDTH 88
-#define PAUSE_LOCATION_Y 10 + 3 * (10 + STATUS_CAPTION_HEIGHT)
+#define PAUSE_LOCATION_Y 5+STATUS_CAPTION_HEIGHT*2
 #define PAUSE_LOCATION_X 300
 #define RECONF_MOUSE_LOCATION 130 ... (130 + BOARD_BUTTON_HEIGHT)
 #define RECONF_CAT_LOCATION (130 + BOARD_BUTTON_HEIGHT + 50) ... (130 + 2*BOARD_BUTTON_HEIGHT + 50)
 #define RESTART_GAME_LOCATION (130 + 2*BOARD_BUTTON_HEIGHT + 100) ... (130 + 3*BOARD_BUTTON_HEIGHT + 100)
 #define GOTO_MAIN_MENU_LOCATION (130 + 3*BOARD_BUTTON_HEIGHT + 150) ... (130 + 4*BOARD_BUTTON_HEIGHT + 150)
 #define QUIT_PROG_LOCATION (130 + 4*BOARD_BUTTON_HEIGHT + 200) ... (130 + 5*BOARD_BUTTON_HEIGHT + 200)
+#define SAVE_GAME_LOCATION 10 ... 10+BOARD_BUTTON_WIDTH
+#define RETURN_TO_MAIN_EDIT_LOCATION 10+300 ... 10+300+BOARD_BUTTON_WIDTH
+#define QUIT_PROG_EDIT_LOCATION 10+600 ... 10+600+BOARD_BUTTON_WIDTH
 #define PLACE_MOUSE_LOCATION RECONF_MOUSE_LOCATION
 #define PLACE_CAT_LOCATION RECONF_CAT_LOCATION
 #define PLACE_CHEESE_LOCATION RESTART_GAME_LOCATION
 #define PLACE_WALL_LOCATION GOTO_MAIN_MENU_LOCATION
 #define PLACE_EMPTY_LOCATION QUIT_PROG_LOCATION
-#define CAPTION_HEIGHT 50
-#define CAPTION_WIDTH 300
-#define MOUSE_LOCATION 1629
-#define CAT_LOCATION 1541
-#define CHEESE_LOCATION 1368
-#define WALL_LOCATION 1455
+#define CAPTION_HEIGHT 70
+#define CAPTION_WIDTH 264
+#define CAPTION_X 687
+#define CAPTION_DELTA 7
+#define MOUSE_LOCATION 1624
+#define CAT_LOCATION 1536
+#define CHEESE_LOCATION 1362
+#define WALL_LOCATION 1450
 #define PINK_DELTA 85
+#define STATUS_CAPTION_WIDTH 300
+#define STATUS_CAPTION_HEIGHT 24
 #define STATUS_CAPTIONS_X 1112
 #define STATUS_CAPTIONS_Y 187
-#define SPACE_BUTTON_HEIGHT 34
-#define SPACE_BUTTON_WIDTH 245
+#define SPACE_BUTTON_Y 2*STATUS_CAPTION_HEIGHT+9
+#define SPACE_BUTTON_X 1094
+#define SPACE_BUTTON_HEIGHT 48
+#define SPACE_BUTTON_WIDTH 265
 #define GAME_OVER_MOUSE_Y 386
 #define GAME_OVER_CAT_Y 453
 #define GAME_OVER_TIMEOUT_Y 530
@@ -81,17 +91,20 @@
 #define WORLD_SELECT_X 1590
 #define WORLD_SELECT_UNMARK_X 1366
 #define PAUSED_SIDE_PANEL_LOCATION 1155
-#define MOUSE_MOVE_NUM_HEIGHT 184
-#define STATUS_CAPTION_WIDTH 300
-#define STATUS_CAPTION_HEIGHT 24
-#define DIGIT_X 1092
-#define MOUSE_1ST_DIGIT_X 137
-#define DIGIT_WIDTH 10
-#define CAT_1ST_DIGIT_X 107
-#define ZERO_Y 360
-#define PINK_CELL_X 1367
+#define NUM_HEIGHT 179
+#define DIGIT_X 1125
+#define DIGIT_Y 597
+#define DIGIT_DELTA 48
+#define MOUSE_1ST_DIGIT_X 135
+#define DIGIT_WIDTH 12
+#define CAT_1ST_DIGIT_X 110
+#define PINK_CELL_X 1360
 #define PINK_CELL_Y 171
-#define YELLOW_Y 86
+#define YELLOW_Y 83
+#define WORLD_CAPTION_X 83
+#define WORLD_CAPTION_Y 700
+#define WORLD_CAPTION_WIDTH 115
+#define WORLD_CAPTION_HEIGHT 33
 
 //player definitions
 #define MOUSE 0
@@ -115,20 +128,24 @@
 #define UNPAUSE 14
 #define SAVE_GAME 15
 #define RESTART_GAME 16
-#define RECONF_CAT 17
-#define RECONF_MOUSE 18
+#define RECONF_CAT 18
+#define RECONF_MOUSE 17
 #define PLACE_CAT 19
 #define PLACE_MOUSE 20
 #define PLACE_CHEESE 21
 #define PLACE_WALL 22
 #define PLACE_EMPTY 23
 #define WARP 24
+#define MAIN_MENU 25
+#define RECONF_CAT_SKILL 26
+#define RECONF_MOUSE_SKILL 27
 
 //macro defines
 #define WindowInitMacro	 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {\
 								printf("ERROR: unable to init SDL: %s\n", SDL_GetError());\
 								return 1;\
 							} \
+							SDL_WM_SetIcon(SDL_LoadBMP("catMouse.bmp"), NULL);\
 							atexit(SDL_Quit);
 
 #define PauseMacro if (!gameOver) { \
@@ -150,13 +167,15 @@ typedef struct Widget Widget;
 
 typedef Widget* WidgetRef;
 
-gameOptions game;
+
 
 WidgetRef mouse, cat, pink; //Widgets for quick board updating
-
+void displayCaptions(int action);
 int humanSelect(int player);
 int openGameWindow(int gameNum);
-int skillSelect(int player);
+//int skillSelect(int player);
+void updateGridWarp(char** board, int prevRow, int prevCol, int newRow,
+		int newCol);
 SDL_Surface * display;
 
 WidgetRef getChildWidget(TreeRef root, int childNum) {
@@ -236,8 +255,8 @@ Widget* createWidget(int x, int y, int srcX, int srcY, int width, int height,
 	temp->isSelected = isSelected;
 	temp->img_filename = filename;
 	temp->caption = caption;
-//printf ("%s\n", temp->img_filename);
-	printf("new widget address: %d\n", (int) temp);
+	//printf ("%s\n", temp->img_filename);
+	//printf("new widget address: %d\n", (int) temp);
 	return temp;
 }
 
@@ -245,33 +264,22 @@ int openMainWindow() {
 	int i, action = 0, gameNum = 1;
 
 	// Initialize SDL and make sure it quits
-	/*if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-	 printf("ERROR: unable to init SDL: %s\n", SDL_GetError());
-	 return 1;
-	 }
-	 atexit(SDL_Quit);
-	 display = SDL_SetVideoMode(500, 700, 0, SDL_HWSURFACE | SDL_DOUBLEBUF);
-	 */
 	WindowInitMacro;
 	display = SDL_SetVideoMode(500, 700, 0, SDL_HWSURFACE | SDL_DOUBLEBUF);
 	TreeRef t = newTree(createWidget(0, 0, 0, 0, 600, 7000, 0, NULL, "hgh"));
 	i = 0;
-	insertChild(t,
-			createWidget(100, i * 10 + 200 + i * BUTTON_HEIGHT, 6,
-					i * BUTTON_HEIGHT, BUTTON_WIDTH, BUTTON_HEIGHT, 1,
-					"Buttons.bmp", ""));
-	for (i = 1; i < 5; i++) {
+
+	for (i = 0; i < 5; i++) {
 		insertChild(t,
 				createWidget(100, i * 10 + 200 + i * BUTTON_HEIGHT, 6,
-						i * BUTTON_HEIGHT, BUTTON_WIDTH, BUTTON_HEIGHT - 2, 0,
-						"Buttons.bmp", ""));
+						9 + i * (BUTTON_HEIGHT + BUTTON_H_GAP), BUTTON_WIDTH,
+						BUTTON_HEIGHT, 0, "Buttons.bmp", ""));
 	}
+	getChildWidget(t, 1)->isSelected = 1;
 
 	nonRecDFS(t, displayWidget);
 	//display caption
-	displayWidget(createWidget(150, 100,
-	CAPTION_LOCATION_X, CAPTION_HEIGHT * 4 - 3,
-	CAPTION_WIDTH, CAPTION_HEIGHT, 0, "Buttons2.bmp", ""));
+	displayCaptions(MAIN_MENU);
 
 	// Poll for keyboard & mouse events
 	SDL_Event e;
@@ -348,6 +356,7 @@ int openMainWindow() {
 						action = CREATE_GAME;
 						break;
 					case EDIT_GAME_LOCATION:
+						action = EDIT_GAME;
 						puts("edit game");
 						break;
 					case QUIT_LOCATION:
@@ -366,29 +375,49 @@ int openMainWindow() {
 				puts("new game");
 				SDL_Quit();
 				if (action == LOAD_GAME) {
-					gameNum = worldSelect(LOAD_GAME);
+					gameNum = worldSelect(LOAD_GAME, 1, -1);
 				} else {
 					gameNum = 1;
 				}
-				if (humanSelect(CAT) == 1) {
-					puts("finished game gathering");
-					openGameWindow(gameNum);
-					puts("back from game");
+				if (gameNum != BACK) {
+					puts("gamenum select succeeded");
+					if (humanSelect(CAT) == 1) {
+						puts("finished game gathering");
+						openGameWindow(gameNum);
+						puts("back from game");
+					}
+				}
+
+				WindowInitMacro
+				display = SDL_SetVideoMode(500, 700, 0,
+				SDL_HWSURFACE | SDL_DOUBLEBUF);
+				nonRecDFS(t, displayWidget);
+				//display caption
+				displayCaptions(MAIN_MENU);
+
+				action = 0;
+				break;
+			case EDIT_GAME:
+			case CREATE_GAME:
+
+				puts("create game");
+				SDL_Quit();
+
+				if (action == EDIT_GAME) {
+					gameNum = worldSelect(EDIT_GAME, 1, -1);
+				} else {
+					gameNum = 0;
+				}
+				if (gameNum != BACK) {
+					openEditorWindow(gameNum);
 				}
 				WindowInitMacro
 				display = SDL_SetVideoMode(500, 700, 0,
 				SDL_HWSURFACE | SDL_DOUBLEBUF);
 				nonRecDFS(t, displayWidget);
 				//display caption
-				displayWidget(createWidget(150, 100,
-				CAPTION_LOCATION_X, CAPTION_HEIGHT * 4 - 3,
-				CAPTION_WIDTH, CAPTION_HEIGHT, 0, "Buttons2.bmp", ""));
+				displayCaptions(MAIN_MENU);
 
-				action = 0;
-				break;
-
-			case CREATE_GAME:
-				puts("create game");
 				action = 0;
 				break;
 			case QUIT:
@@ -420,46 +449,83 @@ WidgetRef newWidget(int x, int y, int width, int height, int isSelected,
 	return new;
 }
 
-int main() {
+int main90() {
 	//findShortestPaths();
-	//openGameWindow(1);
-	openEditorWindow(1);
+	 game.cat_human =1;
+	 game.mouse_human =1;
+
+	openGameWindow(1);
+	//openEditorWindow(0);
+	//SaveErrorMsgWindow(3);
+	//worldSelect(LOAD_GAME, 3, 0);
+	//skillSelect(4);
+
 }
 
-int main5(int argc, char* args[]) {
+void displayCaptions(int action) {
+	WidgetRef temp = createWidget(100, 100, CAPTION_X, 0,
+	CAPTION_WIDTH, CAPTION_HEIGHT, 0, "Buttons2.bmp", "Caption");
+	printf("dispaly action %d\n", action);
+	switch (action) {
+	case MAIN_MENU:
+		SDL_WM_SetCaption("Cat and Mouse", "");
+		temp->srcY = 6 * (CAPTION_HEIGHT) + 5 * CAPTION_DELTA;
+		break;
+	case LOAD_GAME:
+		SDL_WM_SetCaption("Load Game", "");
+		temp->srcY = 5;
+		break;
+	case SAVE_GAME:
+		SDL_WM_SetCaption("Save Game", "");
+		temp->srcY = 9 * CAPTION_HEIGHT + 8 * CAPTION_DELTA;
+		break;
+	case RECONF_CAT_SKILL:
+		SDL_WM_SetCaption("Choose Cat Skill", "");
+		temp->srcY = 2 * CAPTION_HEIGHT + CAPTION_DELTA;
+		break;
+	case RECONF_MOUSE_SKILL:
+		SDL_WM_SetCaption("Choose Mouse Skill", "");
+		temp->srcY = 4 * CAPTION_HEIGHT + 3 * CAPTION_DELTA;
+		break;
+	case RECONF_CAT:
+		SDL_WM_SetCaption("Choose Your Cat", "");
+		temp->srcY = 7 * CAPTION_HEIGHT + 6 * CAPTION_DELTA;
+		break;
+	case RECONF_MOUSE:
+		SDL_WM_SetCaption("Choose Your Mouse", "");
+		temp->srcY = 8 * CAPTION_HEIGHT + 7 * CAPTION_DELTA;
+		break;
+	case EDIT_GAME:
+		SDL_WM_SetCaption("Edit Game", "");
+		temp->srcY = 10 * CAPTION_HEIGHT + 9 * CAPTION_DELTA;
+		break;
+	case CREATE_GAME:
+		SDL_WM_SetCaption("Create Game", "");
+		break;
+
+	}
+	displayWidget(temp);
+	free(temp);
+}
+
+int main(int argc, char* args[]) {
 
 	if (argc > 1) {
 		if (!strcmp(args[1], "-console")) {
 			consoleMode();
 		}
 	}
-	//skillSelect(1);
-	/*TreeRef t1 = newTree(createWidget(1, 2, 3, 4, 5, 6, 1, "a", "b"));
-	 insertChild(t1, createWidget(7, 8, 9, 10, 11, 12, 0, "c", "d"));
-	 insertChild(t1, newWidget(5, 5, 5, 5, 0, "f", "f"));
-	 TreeRef Two = (TreeRef) (headData(getChildren(t1)));
-	 // void**  p=rootData(Two);
-	 //printf("x of child is %d ", (getChild(t1,1))->x);
-	 //printWidget((WidgetRef)(getChild(t1,1)));
-	 //DFSPrint(t1,printWidget());
-	 //DFSTwo (t1, printWidget);
-	 */
 
-	//humanSelect(CAT);
 	int quit = 0;
 	while (!quit) {
 		quit = openMainWindow();
 	}
-
-	//openGameWindow(game);
-	//worldSelect(0);
-	//humanSelect(0);
-	return 1;
+	return 0;
 }
 
 TreeRef boardToTree(char** board) {
 	TreeRef temp = newTree(
-			createWidget(0, 0, 0, 0, 862, 662, 0, "Board.bmp", "hgh"));
+			createWidget(0, 0, 0, 0, 862, 662, 0, "Board.bmp", "Board Panel"));
 	int i, j;
 	for (i = 0; i < 7; i++) {
 		for (j = 0; j < 7; j++) {
@@ -467,146 +533,60 @@ TreeRef boardToTree(char** board) {
 			case 'M':
 				mouse = createWidget(SIDE_PANEL_WIDTH + i * CELL_WIDTH + 3,
 				TOP_PANEL_HEIGHT + j * CELL_HEIGHT, MOUSE_LOCATION, 0,
-				CELL_WIDTH - 10, CELL_HEIGHT - 4, 0, "Board.bmp", "");
+				CELL_WIDTH - 10, CELL_HEIGHT - 4, 0, "Board.bmp", "Mouse");
 				insertChild(temp, mouse);
 
 				break;
 			case 'P':
 				insertChild(temp,
-						createWidget(SIDE_PANEL_WIDTH + i * CELL_WIDTH + 10,
-						TOP_PANEL_HEIGHT + j * CELL_HEIGHT, CHEESE_LOCATION, 0,
-						CELL_WIDTH - 10, CELL_HEIGHT - 3, 0, "Board.bmp", ""));
+						createWidget(SIDE_PANEL_WIDTH + i * CELL_WIDTH + 4,
+						TOP_PANEL_HEIGHT + j * CELL_HEIGHT + 1, CHEESE_LOCATION,
+								0,
+								CELL_WIDTH - 10, CELL_HEIGHT - 5, 0,
+								"Board.bmp", "Cheese"));
 				break;
 			case 'W':
 				insertChild(temp,
-						createWidget(SIDE_PANEL_WIDTH + i * CELL_WIDTH + 10,
+						createWidget(SIDE_PANEL_WIDTH + i * CELL_WIDTH + 4,
 						TOP_PANEL_HEIGHT + j * CELL_HEIGHT, WALL_LOCATION, 0,
-						CELL_WIDTH - 10, CELL_HEIGHT - 3, 0, "Board.bmp", ""));
+						CELL_WIDTH - 10, CELL_HEIGHT - 3, 0, "Board.bmp",
+								"Wall"));
 				break;
 			case 'C':
 				cat = createWidget(SIDE_PANEL_WIDTH + i * CELL_WIDTH + 3,
 				TOP_PANEL_HEIGHT + j * CELL_HEIGHT, CAT_LOCATION, 0,
-				CELL_WIDTH - 10, CELL_HEIGHT - 4, 0, "Board.bmp", "");
+				CELL_WIDTH - 10, CELL_HEIGHT - 4, 0, "Board.bmp", "Cat");
 				insertChild(temp, cat);
 				break;
 			}
 		}
 	}
-	printBoard(board);
-	//nonRecDFS(temp, displayWidget);
+
 	return temp;
 }
 
-void updateGrid(int direction, char newCellContent, char prevCellContent) {
+void updateGridAdj(int direction, char newCellContent, char prevCellContent) {
+
 	puts("update");
 	WidgetRef temp;
 	int imgLoc;
 
-	if (!strcmp(turn, "mouse")) {
+	if (strcmp(turn, "mouse")) {
 		temp = mouse;
 		imgLoc = MOUSE_LOCATION;
-	} else if (!strcmp(turn, "cat")) {
+	} else if (strcmp(turn, "cat")) {
 		temp = cat;
 		imgLoc = CAT_LOCATION;
-	} else {
-		puts("pink");
-		printWidget(pink);
-		temp = pink;
-		imgLoc = PINK_CELL_X;
-
 	}
 
-	switch (imgLoc) {
-	case MOUSE_LOCATION:
-	case CAT_LOCATION:
-		//print empty cell in old location
+	//print empty cell in old location
 
-		temp->srcY = TOP_PANEL_HEIGHT;
-		temp->srcX = SIDE_PANEL_WIDTH + 3;
-		displayWidget(temp);
-		//move to new location and print in new location
-		temp->srcX = imgLoc;
-		temp->srcY = 0;
-		break;
-	case PINK_CELL_X:
-		if (direction > 0) {
-			//print old cell in old location
-			temp->srcY = TOP_PANEL_HEIGHT;
-			temp->srcX = SIDE_PANEL_WIDTH;
-			displayWidget(temp);
-
-			temp->width -= 14;
-			switch (prevCellContent) {
-
-			case 'C':
-				temp->x += 3;
-
-				temp->srcX = CAT_LOCATION - 2;
-				temp->srcY = 0;
-				displayWidget(temp);
-
-				temp->x -= 3;
-				break;
-			case 'M':
-				temp->x += 3;
-				temp->srcX = MOUSE_LOCATION - 2;
-				temp->srcY = 0;
-				displayWidget(temp);
-				temp->x -= 3;
-				break;
-			case 'P':
-				temp->x += 3;
-				temp->srcX = CHEESE_LOCATION;
-				temp->srcY = 0;
-				displayWidget(temp);
-				temp->x -= 3;
-				break;
-			case 'W':
-				temp->x += 10;
-				temp->srcX = WALL_LOCATION;
-				temp->srcY = 0;
-				displayWidget(temp);
-				temp->x -= 10;
-				break;
-
-			} //end switch prevcell content
-			temp->width += 14;
-		} //end if
-		  //move to new location
-		switch (newCellContent) {
-		case 'C':
-			temp->width -= 7;
-			temp->x += 3;
-			temp->srcX = CAT_LOCATION - 2;
-			temp->srcY = YELLOW_Y;
-			break;
-		case 'M':
-			temp->width -= 7;
-			temp->x += 3;
-			temp->srcX = MOUSE_LOCATION - 2;
-			temp->srcY = YELLOW_Y;
-			break;
-		case 'P':
-			temp->width -= 7;
-			temp->x += 3;
-			temp->srcX = CHEESE_LOCATION;
-			temp->srcY = YELLOW_Y;
-			break;
-		case 'W':
-			temp->width -= 14;
-			temp->x += 10;
-			temp->srcX = WALL_LOCATION;
-			temp->srcY = YELLOW_Y;
-
-			break;
-		default:
-			temp->srcX = imgLoc;
-			temp->srcY = PINK_CELL_Y;
-			break;
-		} //end switch newcell content
-
-		break;
-	} //end pink cell
+	temp->srcY = TOP_PANEL_HEIGHT;
+	temp->srcX = SIDE_PANEL_WIDTH + 3;
+	displayWidget(temp);
+	//move to new location and print in new location
+	temp->srcX = imgLoc;
+	temp->srcY = 0;
 
 	switch (direction) {
 	case UP:
@@ -644,29 +624,24 @@ void updateGrid(int direction, char newCellContent, char prevCellContent) {
 
 int openGameWindow(int gameNum) {
 	int i = 1, action = -1, direction = 0, pause = 0, turnCounter = 1,
-			gameOver = 0;
+			gameOver = 0, prevRow = 0, prevCol = 0;
+	WidgetRef temp, gameOverCaption;
 
 	if (game.cat_human == -1 || game.mouse_human == -1) {
 		return -1;
 	}
-	//loading default game world #1
+	//loading game & initing board
 	char** board = loadGame(gameNum);
-	//$$$ Check including it inside
-	updateGameStatus(board);
-
-	//parsing gameOption...ארקק
-	//TODO
+	//updating global variables
+	updateBoardStatus(board);
 
 	WindowInitMacro;
 	display = SDL_SetVideoMode(826, 662, 0, SDL_HWSURFACE | SDL_DOUBLEBUF);
 
-	//TreeRef t2 = newTree(createWidget(0, 0, 0, 0, 826, 662, 0, NULL, "hgh"));
-	//nonRecDFS(t2, displayWidget);
-
 	TreeRef sidePanel = newTree(
 			createWidget(0, TOP_PANEL_HEIGHT, 0, 0, SIDE_PANEL_WIDTH,
 			GRID_HEIGHT, 0,
-			NULL, "hgh"));
+			NULL, "Side Panel"));
 	for (i = 0; i < 5; i++) {
 		insertChild(sidePanel,
 				createWidget(20, 130 + BOARD_BUTTON_HEIGHT * i + 50 * i, 0,
@@ -683,33 +658,38 @@ int openGameWindow(int gameNum) {
 				createWidget(20, 130 + BOARD_BUTTON_HEIGHT * i + 50 * i,
 				BOARD_BUTTON_WIDTH + 6, i * BOARD_BUTTON_HEIGHT,
 				BOARD_BUTTON_WIDTH, BOARD_BUTTON_HEIGHT, 0, "Buttons2.bmp",
-						""));
+						"Frozen SidePanel Button"));
 	}
 
-	TreeRef topPanel = newTree(createWidget(0, 0, 0, 0, 0, 0, 0, NULL, "hgh"));
-	for (i = 0; i < 3; i++) {
+	TreeRef topPanel = newTree(
+			createWidget(0, 0, 0, 0, 0, 0, 0, NULL, "Top Panel object"));
+	for (i = 0; i < 2; i++) {
 		insertChild(topPanel,
-				createWidget(300, 10 + i * (10 + STATUS_CAPTION_HEIGHT),
+				createWidget(300, 5 + i * ( STATUS_CAPTION_HEIGHT),
 				STATUS_CAPTIONS_X, 0, STATUS_CAPTION_WIDTH,
-				STATUS_CAPTION_HEIGHT, 0, "Buttons.bmp", "hgh"));
+				STATUS_CAPTION_HEIGHT + 4, 0, "Buttons.bmp", "TopPanelWidget"));
 	}
+	WidgetRef pauseButton = createWidget(330, SPACE_BUTTON_Y + 2,
+	SPACE_BUTTON_X, SPACE_BUTTON_HEIGHT + 9, SPACE_BUTTON_WIDTH,
+	SPACE_BUTTON_HEIGHT, 0, "Buttons.bmp", "PauseButton");
 
-	WidgetRef tens = createWidget(300 + MOUSE_1ST_DIGIT_X, 10, 2000, 2000,
+	WidgetRef tens = createWidget(300 + MOUSE_1ST_DIGIT_X, 9, 2000, 2000,
 	DIGIT_WIDTH,
-	STATUS_CAPTION_HEIGHT, 0, "Buttons.bmp", "hgh");
-	WidgetRef ones = createWidget(300 + MOUSE_1ST_DIGIT_X + DIGIT_WIDTH, 10,
-	DIGIT_X, ZERO_Y, DIGIT_WIDTH,
-	STATUS_CAPTION_HEIGHT, 0, "Buttons.bmp", "hgh");
+	STATUS_CAPTION_HEIGHT, 0, "Buttons.bmp", "Tens digit");
+	WidgetRef ones = createWidget(300 + MOUSE_1ST_DIGIT_X + DIGIT_WIDTH, 9,
+	DIGIT_X, DIGIT_Y, DIGIT_WIDTH,
+	STATUS_CAPTION_HEIGHT, 0, "Buttons.bmp", "Ones digit");
+
+	insertChild(topPanel, pauseButton);
 	insertChild(topPanel, tens);
 	insertChild(topPanel, ones);
 
 	getChildWidget(topPanel, 3)->height = SPACE_BUTTON_HEIGHT;
+	TreeRef boardTree = boardToTree(board);
 
-	//nonRecDFS(topPanel, displayWidget);
-	nonRecDFS(boardToTree(board), displayWidget);
-	//nonRecDFS(sidePanel, printWidget);
-	//nonRecDFS(sidePanel, displayWidget);
+	nonRecDFS(boardTree, displayWidget);
 	nonRecDFS(frozenSidePanel, displayWidget);
+	SDL_WM_SetCaption("Cat and Mouse", "");
 	//SDL_Delay(5000);
 
 	SDL_Event e;
@@ -725,33 +705,39 @@ int openGameWindow(int gameNum) {
 			printf("turn %d, %d\n", turnCounter,
 					(turnCounter / 2 - turnCounter / 2 % 10) / 10);
 
+			action = 0;
+			//digit updating
 			if (turnCounter > 19 && tens->srcX == 2000) {
 				tens->srcX = DIGIT_X;
 			}
-			tens->srcY =
-					ZERO_Y + 4
-							+ (STATUS_CAPTION_HEIGHT)
-									* (((turnCounter / 2
-											- (turnCounter / 2) % 10)) / 10);
+			tens->srcY = DIGIT_Y
+					+ (DIGIT_DELTA)
+							* +(((turnCounter / 2 - (turnCounter / 2) % 10))
+									/ 10);
 
-			ones->srcY = ZERO_Y + 4
-					+ (STATUS_CAPTION_HEIGHT) * (turnCounter / 2 % 10);
+			ones->srcY = DIGIT_Y + (DIGIT_DELTA) * ((turnCounter / 2 % 10));
 			if (!strcmp(turn, "mouse")) {
 				cur = mouse;
 				puts("mouse turn");
 				tens->x = 300 + MOUSE_1ST_DIGIT_X;
 				ones->x = 300 + MOUSE_1ST_DIGIT_X + DIGIT_WIDTH;
 
-				getChildWidget(topPanel, 1)->srcY = MOUSE_MOVE_NUM_HEIGHT;
+				getChildWidget(topPanel, 1)->srcY = 2 + NUM_HEIGHT;
+
 				if (game.mouse_human) {
 					puts("human mouse");
-					getChildWidget(topPanel, 2)->srcY = MOUSE_MOVE_NUM_HEIGHT
+					getChildWidget(topPanel, 2)->srcY = 2 + NUM_HEIGHT
 							+ STATUS_CAPTION_HEIGHT * 2;
-					getChildWidget(topPanel, 3)->srcY = SPACE_BUTTON_HEIGHT;
+					getChildWidget(topPanel, 3)->srcY = SPACE_BUTTON_HEIGHT + 5;
 
 				} else { //machine mouse
-					getChildWidget(topPanel, 2)->srcY = MOUSE_MOVE_NUM_HEIGHT
+					getChildWidget(topPanel, 2)->srcY = 2 + NUM_HEIGHT
 							+ 4 * STATUS_CAPTION_HEIGHT;
+					direction = wrapGetBestChild(catRow, catCol, mouseRow,
+							mouseCol, &board, game.mouse_skill,
+							getChildrenStates, free, evalFunc, 1).index;
+
+					action = MOVE;
 				}
 
 			} else {
@@ -761,26 +747,31 @@ int openGameWindow(int gameNum) {
 				tens->x = 300 + CAT_1ST_DIGIT_X;
 				ones->x = 300 + CAT_1ST_DIGIT_X + DIGIT_WIDTH;
 
-				getChildWidget(topPanel, 1)->srcY = MOUSE_MOVE_NUM_HEIGHT
+				getChildWidget(topPanel, 1)->srcY = 2 + NUM_HEIGHT
 						+ STATUS_CAPTION_HEIGHT;
 				if (game.cat_human) {
 					puts("human cat");
-					getChildWidget(topPanel, 2)->srcY = MOUSE_MOVE_NUM_HEIGHT
+					getChildWidget(topPanel, 2)->srcY = 2 + NUM_HEIGHT
 							+ STATUS_CAPTION_HEIGHT * 2;
-					getChildWidget(topPanel, 3)->srcY = SPACE_BUTTON_HEIGHT;
 
 				} else { //machine cat
-					getChildWidget(topPanel, 2)->srcY = MOUSE_MOVE_NUM_HEIGHT
+					direction = wrapGetBestChild(catRow, catCol, mouseRow,
+							mouseCol, &board, game.cat_skill, getChildrenStates,
+							free, evalFunc, 1).index;
+
+					action = MOVE;
+					getChildWidget(topPanel, 2)->srcY = 2 + NUM_HEIGHT
 							+ 4 * STATUS_CAPTION_HEIGHT;
 				}
 
 			}
+			if (!game.cat_human && (!game.mouse_human)) {
+				SDL_Delay(1000);
+			}
 			curPos.x = cur->x;
 			curPos.y = cur->y;
-			//insertChild(topPanel, createWidget(300, 20, STATUS_CAPTIONS_X, 0,
-			//SPACE_BUTTON_WIDTH, SPACE_BUTTON_HEIGHT, 0, "Buttons.bmp", ""));
 			nonRecDFS(topPanel, displayWidget);
-			action = 0;
+
 		}
 		while (SDL_PollEvent(&e) != 0) {
 			switch (e.type) {
@@ -807,7 +798,7 @@ int openGameWindow(int gameNum) {
 					direction = RIGHT;
 					break;
 				case SDLK_ESCAPE:
-					action = QUIT;
+					action = BACK;
 					break;
 				case (SDLK_SPACE):
 					PauseMacro
@@ -835,31 +826,36 @@ int openGameWindow(int gameNum) {
 				break; //break keyup
 
 			case (SDL_MOUSEBUTTONUP):
+				if ((!strcmp(turn, "mouse") && game.mouse_human)
+						|| (!strcmp(turn, "cat") && game.cat_human)) {
+					if ((e.button.x > curPos.x + curPos.w)
+							&& (e.button.x < curPos.x + 2 * curPos.w)
+							&& (e.button.y > curPos.y)
+							&& (e.button.y < curPos.y + curPos.h)) {
 
-				if ((e.button.x > curPos.x + curPos.w)
-						&& (e.button.x < curPos.x + 2 * curPos.w)
-						&& (e.button.y > curPos.y)
-						&& (e.button.y < curPos.y + curPos.h)) {
-					action = MOVE;
-					direction = RIGHT;
-				} else if ((e.button.x > curPos.x - CELL_WIDTH)
-						&& (e.button.x < curPos.x) && (e.button.y > curPos.y)
-						&& (e.button.y < curPos.y + curPos.h)) {
-					action = MOVE;
-					direction = LEFT;
-				} else if ((e.button.x > curPos.x)
-						&& (e.button.x < curPos.x + curPos.w)
-						&& (e.button.y > curPos.y - curPos.h)
-						&& (e.button.y < curPos.y)) {
-					action = MOVE;
-					direction = UP;
-				} else if ((e.button.x > curPos.x)
-						&& (e.button.x < curPos.x + curPos.w)
-						&& (e.button.y > curPos.y + curPos.h)
-						&& (e.button.y < curPos.y + 2 * curPos.h)) {
-					action = MOVE;
-					direction = DOWN;
-				} else if ((e.button.x > getChildWidget(topPanel, 3)->x)
+						action = MOVE;
+						direction = RIGHT;
+					} else if ((e.button.x > curPos.x - CELL_WIDTH)
+							&& (e.button.x < curPos.x)
+							&& (e.button.y > curPos.y)
+							&& (e.button.y < curPos.y + curPos.h)) {
+						action = MOVE;
+						direction = LEFT;
+					} else if ((e.button.x > curPos.x)
+							&& (e.button.x < curPos.x + curPos.w)
+							&& (e.button.y > curPos.y - curPos.h)
+							&& (e.button.y < curPos.y)) {
+						action = MOVE;
+						direction = UP;
+					} else if ((e.button.x > curPos.x)
+							&& (e.button.x < curPos.x + curPos.w)
+							&& (e.button.y > curPos.y + curPos.h)
+							&& (e.button.y < curPos.y + 2 * curPos.h)) {
+						action = MOVE;
+						direction = DOWN;
+					}
+				}
+				if ((e.button.x > getChildWidget(topPanel, 3)->x)
 						&& (e.button.x
 								< getChildWidget(topPanel, 3)->x
 										+ SPACE_BUTTON_WIDTH)
@@ -913,31 +909,37 @@ int openGameWindow(int gameNum) {
 
 			display = SDL_SetVideoMode(826, 662, 0,
 			SDL_HWSURFACE | SDL_DOUBLEBUF);
-
-			nonRecDFS(boardToTree(board), displayWidget);
+			SDL_WM_SetCaption("Cat and Mouse", "");
+			nonRecDFS(boardTree, displayWidget);
 			nonRecDFS(sidePanel, displayWidget);
 			nonRecDFS(topPanel, displayWidget);
 			action = 0;
 			break;
 		case QUIT:
-			puts("quit");
-			SDL_Quit();
-			freeBoard(board);
-			exit(0);
-			break;
 		case BACK:
 			SDL_Quit();
-			return 1;
+			destroyTree(sidePanel, free);
+			destroyTree(topPanel, free);
+			destroyTree(frozenSidePanel, free);
+			destroyTree(boardTree, free);
+			freeBoard(board);
+			if (action == BACK) {
+				return 1;
+			} else {
+				exit(0);
+			}
 			break;
 		case MOVE:
+
 			if (pause) {
 				action = 0;
 				direction = 0;
 				break;
-			} else if (move(&board, direction)) {
+			} else if (i=move(&board, direction)) {
 				puts("move");
-				updateGrid(direction, '#', '#');
-				switchTurn();
+				puts(turn);
+				printf ("%d" ,i);
+				updateGridAdj(direction, '#', '#');
 				turnCounter++;
 			}
 			direction = 0;
@@ -949,14 +951,15 @@ int openGameWindow(int gameNum) {
 				nonRecDFS(sidePanel, displayWidget);
 				if ((game.cat_human && !strcmp(turn, "cat"))
 						|| (game.mouse_human && !strcmp(turn, "mouse"))) {
-					getChildWidget(topPanel, 2)->srcY = MOUSE_MOVE_NUM_HEIGHT
+					getChildWidget(topPanel, 2)->srcY = 3 + NUM_HEIGHT
 							+ STATUS_CAPTION_HEIGHT * 3;
 				} else {
-					getChildWidget(topPanel, 2)->srcY = MOUSE_MOVE_NUM_HEIGHT
+					getChildWidget(topPanel, 2)->srcY = 3 + NUM_HEIGHT
 							+ STATUS_CAPTION_HEIGHT * 3; //TODO add machine pause
 				}
 
-				getChildWidget(topPanel, 3)->srcY = 2 * SPACE_BUTTON_HEIGHT;
+				getChildWidget(topPanel, 3)->srcY =
+						11 + 2 * SPACE_BUTTON_HEIGHT;
 				nonRecDFS(topPanel, displayWidget);
 			}
 			action = 0;
@@ -967,18 +970,19 @@ int openGameWindow(int gameNum) {
 				board = loadGame(gameNum);
 				gameOver = 0;
 				turnCounter = 1;
-				nonRecDFS(boardToTree(board), displayWidget);
+				boardTree = boardToTree(board);
+				nonRecDFS(boardTree, displayWidget);
 			}
 			pause = 0;
 			if (!gameOver) {
 				nonRecDFS(frozenSidePanel, displayWidget);
-				getChildWidget(topPanel, 2)->srcY = MOUSE_MOVE_NUM_HEIGHT
+				getChildWidget(topPanel, 2)->srcY = NUM_HEIGHT
 						+ STATUS_CAPTION_HEIGHT * 2;
 				if ((game.cat_human && !strcmp(turn, "cat"))
 						|| (game.mouse_human && !strcmp(turn, "mouse"))) {
-					getChildWidget(topPanel, 3)->srcY = SPACE_BUTTON_HEIGHT;
+					getChildWidget(topPanel, 3)->srcY = 8 + SPACE_BUTTON_HEIGHT;
 				} else {
-					getChildWidget(topPanel, 3)->srcY = 0;
+					getChildWidget(topPanel, 3)->srcY = 5;
 				}
 				nonRecDFS(topPanel, displayWidget);
 			}
@@ -992,39 +996,55 @@ int openGameWindow(int gameNum) {
 			if (turnCounter / 2 > max_turns) {
 				puts("tie");
 				gameOver = 1;
-				displayWidget(createWidget(150, 10,
-				STATUS_CAPTIONS_X, GAME_OVER_MOUSE_Y,
-				BIG_MSG_WIDTH - 30, TOP_PANEL_HEIGHT - 20, 0, NULL, ""));
+				//cover up things
+				temp = rootData(topPanel);
+				temp->width = 882;
+				temp->height = TOP_PANEL_HEIGHT - 5;
+				displayWidget(temp);
+				temp->width = temp->height = 0;
 
-				displayWidget(createWidget(120, 10,
-				STATUS_CAPTIONS_X, GAME_OVER_MOUSE_Y + 23 + BIG_MSG_HEIGHT * 2,
-				BIG_MSG_WIDTH - 10, BIG_MSG_HEIGHT, 0, "Buttons.bmp", ""));
+				//display game over caption
+				gameOverCaption = createWidget(120, 10,
+				STATUS_CAPTIONS_X, GAME_OVER_MOUSE_Y + BIG_MSG_HEIGHT * 2,
+				BIG_MSG_WIDTH - 10, BIG_MSG_HEIGHT + 5, 0, "Buttons.bmp", "");
+				displayWidget(gameOverCaption);
+				free(gameOverCaption);
 
 			}
-			switch (updateGameStatus(board)) {
+			switch (updateBoardStatus(board)) {
 			case 1:
 				puts("mouse wins");
 				gameOver = 1;
 
-				displayWidget(createWidget(80, 10,
+				//cover up things
+				temp = rootData(topPanel);
+				temp->width = 882;
+				temp->height = TOP_PANEL_HEIGHT - 5;
+				displayWidget(temp);
+				temp->width = temp->height = 0;
+				//display caption
+				gameOverCaption = createWidget(80, 10,
 				STATUS_CAPTIONS_X, GAME_OVER_MOUSE_Y,
-				BIG_MSG_WIDTH - 30, TOP_PANEL_HEIGHT - 20, 0, NULL, ""));
-
-				displayWidget(createWidget(80, 10,
-				STATUS_CAPTIONS_X, GAME_OVER_MOUSE_Y,
-				BIG_MSG_WIDTH + 30, BIG_MSG_HEIGHT, 0, "Buttons.bmp", ""));
+				BIG_MSG_WIDTH + 30, BIG_MSG_HEIGHT + 5, 0, "Buttons.bmp", "");
+				displayWidget(gameOverCaption);
+				free(gameOverCaption);
 				break;
 			case 2:
 				puts("cat wins");
 				gameOver = 1;
 
-				displayWidget(createWidget(120, 10,
-				STATUS_CAPTIONS_X, GAME_OVER_MOUSE_Y,
-				BIG_MSG_WIDTH - 30, TOP_PANEL_HEIGHT - 20, 0, NULL, ""));
-
-				displayWidget(createWidget(120, 10,
+				//cover up things
+				temp = rootData(topPanel);
+				temp->width = 882;
+				temp->height = TOP_PANEL_HEIGHT - 5;
+				displayWidget(temp);
+				temp->width = temp->height = 0;
+				//display caption
+				gameOverCaption = createWidget(120, 10,
 				STATUS_CAPTIONS_X, GAME_OVER_CAT_Y,
-				BIG_MSG_WIDTH - 10, BIG_MSG_HEIGHT, 0, "Buttons.bmp", ""));
+				BIG_MSG_WIDTH - 10, BIG_MSG_HEIGHT + 5, 0, "Buttons.bmp", "");
+				displayWidget(gameOverCaption);
+				free(gameOverCaption);
 				break;
 			}	//end select
 			if (gameOver) {
@@ -1040,40 +1060,53 @@ int openGameWindow(int gameNum) {
 	return 1;
 }
 
-int worldSelect(int isSave) {
-	int i = 1, action = 0;
-	int worldNum = 1;
+int worldSelect(int selectionType, int curVal, int player) {
+	int i = 1, action = 0, worldNum = -1, skillNum = -1;
+	WidgetRef temp;
+	switch (selectionType) {
+	case SAVE_GAME:
+	case LOAD_GAME:
+	case EDIT_GAME:
+		worldNum = curVal;
+		temp = createWidget(100, 0 * 10 + 200 + 0 * BUTTON_HEIGHT, 6,
+				10 + (BUTTON_HEIGHT + BUTTON_H_GAP) * (8 + worldNum),
+				BUTTON_WIDTH, BUTTON_HEIGHT, 1, "Buttons.bmp",
+				"World # Button");
+		break;
+	case RECONF_CAT_SKILL:
+	case RECONF_MOUSE_SKILL:
+		if (selectionType == RECONF_CAT_SKILL) {
+			skillNum = (game.cat_skill) ? game.cat_skill : 1;
+		} else {
+			skillNum = (game.mouse_skill) ? game.mouse_skill : 1;
+		}
+		temp = createWidget(100, 0 * 10 + 200 + 0 * BUTTON_HEIGHT,
+		BUTTON_WIDTH + 6, 9 + (BUTTON_HEIGHT + BUTTON_H_GAP) * (skillNum - 1),
+		BUTTON_WIDTH, BUTTON_HEIGHT, 1, "Buttons.bmp", "Skill # Button");
+		break;
+
+	}
+
 	puts("worldNum select");
 	WindowInitMacro;
 	display = SDL_SetVideoMode(480, 500, 0, SDL_HWSURFACE | SDL_DOUBLEBUF);
 
 //build and display display-tree
 	TreeRef t2 = newTree(createWidget(0, 0, 0, 0, 600, 800, 0, NULL, "hgh"));
-	insertChild(t2,
-			createWidget(100, 0 * 10 + 200 + 0 * BUTTON_HEIGHT, 6,
-					(BUTTON_HEIGHT - 1) * 9,
-					BUTTON_WIDTH, BUTTON_HEIGHT - 7, 1, "Buttons.bmp", ""));
+	insertChild(t2, temp); //insert skill/world selection box
 	for (i = 7; i < 9; i++) {
 		Widget* b = createWidget(100,
 				(i - 6) * 10 + 200 + (i - 6) * BUTTON_HEIGHT, 6,
-				i * (BUTTON_HEIGHT - 1), BUTTON_WIDTH, BUTTON_HEIGHT - 7, 0,
-				"Buttons.bmp", "");
+				9 + i * (BUTTON_HEIGHT + BUTTON_H_GAP), BUTTON_WIDTH,
+				BUTTON_HEIGHT + 1, 0, "Buttons.bmp", "");
 		insertChild(t2, b);
 	}
-	nonRecDFS(t2, printWidget);
+
 	nonRecDFS(t2, displayWidget);
 
 //display caption
-	if (isSave == SAVE_GAME) {
-		//TODO - replace with right caption
-		displayWidget(createWidget(150, 100,
-		CAPTION_LOCATION_X, LOAD_GAME_CAPTION_LOCATION_Y,
-		CAPTION_WIDTH, CAPTION_HEIGHT, 0, "Buttons2.bmp", ""));
-	} else {
-		displayWidget(createWidget(150, 100,
-		CAPTION_LOCATION_X, LOAD_GAME_CAPTION_LOCATION_Y,
-		CAPTION_WIDTH, CAPTION_HEIGHT, 0, "Buttons2.bmp", ""));
-	}
+	displayCaptions(selectionType);
+
 	SDL_Event e;
 	WidgetRef cur;
 	i = 1;
@@ -1093,187 +1126,6 @@ int worldSelect(int isSave) {
 						if (cur->isSelected == 1) {
 							switch (i) {
 							case 1:
-
-								break;
-							case 2:
-								action = BACK;
-								break;
-							case 3:
-								action = DONE;
-								break;
-							}
-
-							printf("%d", action);
-							break;
-						}
-						i++;
-						cur = getChildWidget(t2, i);
-					} //end while
-
-					break;
-				case SDLK_DOWN:
-					if (i == 1)
-						action = LEVEL_DOWN;
-					break;
-				case SDLK_UP:
-					if (i == 1)
-						action = LEVEL_UP;
-					break;
-				case SDLK_ESCAPE:
-					action = QUIT;
-					break;
-				case SDLK_TAB:
-					printf("tab\n");
-					i = 1;
-					cur = getChildWidget(t2, i);
-					while (cur != NULL) {
-						printWidget(cur);
-						if (cur->isSelected == 1) {
-							puts("1");
-							cur->isSelected = 0;
-							displayWidget(cur);
-							i++;
-							cur = getChildWidget(t2, i);
-							if (cur == NULL) {
-								//if list is over, start from beginning
-								i = 1;
-								cur = getChildWidget(t2, i);
-								puts("over");
-							}
-							cur->isSelected = 1;
-							displayWidget(cur);
-							break;
-						}
-						i++;
-						cur = getChildWidget(t2, i);
-					}
-					break;
-				default:
-					break;
-				}
-				break;
-			case (SDL_MOUSEBUTTONUP):
-
-				if ((e.button.x > 100) && (e.button.x < 95 + BUTTON_WIDTH)) {
-					switch (e.button.y) {
-					case S_SELECT_BACK_LOCATION:
-						action = BACK;
-						break;
-					case DONE_LOCATION:
-						action = DONE;
-						break;
-					case UP_ARROW:
-						puts("up");
-						if (e.button.x > 100 + BUTTON_WIDTH - 32) {
-							action = LEVEL_UP;
-						}
-						break;
-					case DOWN_ARROW:
-						puts("down");
-						if (e.button.x > 100 + BUTTON_WIDTH - 32) {
-							action = LEVEL_DOWN;
-						}
-						break;
-					} //end mouse-y button
-				}  //end mouse-x button
-				break;
-			}
-
-		} //end pollevenet
-		switch (action) {
-		case LEVEL_UP:
-			puts("level_up");
-			cur = getChildWidget(t2, 1);
-			cur->srcY += (BUTTON_HEIGHT - 2);
-			worldNum++;
-			if (worldNum == 6) {
-				cur->srcY = (BUTTON_HEIGHT - 1) * 9;
-				worldNum = 1;
-			}
-			displayWidget(cur);
-			action = 0;
-			break;
-		case LEVEL_DOWN:
-			cur = getChildWidget(t2, 1);
-			cur->srcY -= (BUTTON_HEIGHT - 2);
-			worldNum--;
-			if (worldNum == 0) {
-				cur->srcY = BUTTON_HEIGHT * 13 - 16;
-				worldNum = 5;
-			}
-			displayWidget(cur);
-			action = 0;
-			break;
-
-		case BACK:
-			SDL_Quit();
-			puts("back");
-			return -1;
-			break;
-		case DONE:
-			SDL_Quit();
-			puts("quit");
-			return worldNum;
-		}
-	}
-
-//SDL_Delay(2000);
-	SDL_Quit();
-	return -1;
-}
-
-int skillSelect(int player) {
-	int i = 1, action = 0;
-	int skill = 5;
-	puts("skill select");
-	WindowInitMacro;
-	display = SDL_SetVideoMode(480, 500, 0, SDL_HWSURFACE | SDL_DOUBLEBUF);
-//TreeRef caption = newTree(createWidget(100,0,));
-	TreeRef t2 = newTree(createWidget(0, 0, 0, 0, 600, 800, 0, NULL, "hgh"));
-	insertChild(t2, createWidget(100, 0 * 10 + 200 + 0 * BUTTON_HEIGHT,
-	BUTTON_WIDTH + 6, BUTTON_HEIGHT * 4,
-	BUTTON_WIDTH, BUTTON_HEIGHT - 5, 1, "Buttons.bmp", ""));
-	for (i = 7; i < 9; i++) {
-		Widget* b = createWidget(100,
-				(i - 6) * 10 + 200 + (i - 6) * BUTTON_HEIGHT, 6,
-				i * (BUTTON_HEIGHT - 1), BUTTON_WIDTH, BUTTON_HEIGHT - 5, 0,
-				"Buttons.bmp", "");
-		insertChild(t2, b);
-	}
-	nonRecDFS(t2, printWidget);
-	nonRecDFS(t2, displayWidget);
-
-//display caption
-	if (player == CAT) {
-		displayWidget(createWidget(100, 100,
-		CAPTION_LOCATION_X, SKILL_CAT_CAPTION_LOCATION_Y,
-		BUTTON_WIDTH, CAPTION_HEIGHT, 0, "Buttons2.bmp", ""));
-	} else {
-		displayWidget(createWidget(100, 100,
-		CAPTION_LOCATION_X, SKILL_MOUSE_CAPTION_LOCATION_Y,
-		BUTTON_WIDTH, CAPTION_HEIGHT, 0, "Buttons2.bmp", ""));
-	}
-
-	SDL_Event e;
-	WidgetRef cur;
-	i = 1;
-	while (action != QUIT) {
-		while (SDL_PollEvent(&e) != 0) {
-			switch (e.type) {
-			case (SDL_QUIT):
-				action = BACK;
-				break;
-			case (SDL_KEYUP):
-				switch (e.key.keysym.sym) {
-				case SDLK_RETURN:
-					puts("enter");
-					i = 1;
-					cur = getChildWidget(t2, i);
-					while (cur != NULL) {
-						if (cur->isSelected == 1) {
-							switch (i) {
-							case 1:
-
 								break;
 							case 2:
 								action = BACK;
@@ -1307,7 +1159,6 @@ int skillSelect(int player) {
 					i = 1;
 					cur = getChildWidget(t2, i);
 					while (cur != NULL) {
-						printWidget(cur);
 						if (cur->isSelected == 1) {
 							puts("1");
 							cur->isSelected = 0;
@@ -1336,11 +1187,11 @@ int skillSelect(int player) {
 
 				if ((e.button.x > 100) && (e.button.x < 95 + BUTTON_WIDTH)) {
 					switch (e.button.y) {
+
 					case S_SELECT_BACK_LOCATION:
 						action = BACK;
 						break;
 					case DONE_LOCATION:
-
 						action = DONE;
 						break;
 					case UP_ARROW:
@@ -1362,25 +1213,44 @@ int skillSelect(int player) {
 
 		} //end pollevenet
 		switch (action) {
-		case LEVEL_UP:
-			puts("level_up");
-			cur = getChildWidget(t2, 1);
-			cur->srcY += (BUTTON_HEIGHT - 2);
-			skill++;
-			if (skill == 10) {
-				cur->srcY = 6;
-				skill = 1;
-			}
-			displayWidget(cur);
-			action = 0;
-			break;
 		case LEVEL_DOWN:
+		case LEVEL_UP:
 			cur = getChildWidget(t2, 1);
-			cur->srcY -= (BUTTON_HEIGHT - 2);
-			skill--;
-			if (skill == 0) {
-				cur->srcY = (BUTTON_HEIGHT) * 8 - 9;
-				skill = 9;
+			if (selectionType == SAVE_GAME || selectionType == LOAD_GAME
+					|| selectionType == EDIT_GAME) {
+				if (action == LEVEL_DOWN) {
+					worldNum--;
+					if (worldNum == 0) {
+						worldNum = 5;
+
+					}
+				} else {
+					worldNum++;
+					if (worldNum == 6) {
+						worldNum = 1;
+
+					}
+				}
+
+				cur->srcY = 10
+						+ (BUTTON_HEIGHT + BUTTON_H_GAP) * (8 + worldNum);
+			} else { //skill congif
+				puts("change skill");
+				if (action == LEVEL_DOWN) {
+					skillNum--;
+					if (skillNum == 0) {
+						skillNum = 9;
+
+					}
+				} else {
+					skillNum++;
+					if (skillNum == 10) {
+						skillNum = 1;
+					}
+				}
+
+				cur->srcY = 10
+						+ (BUTTON_HEIGHT + BUTTON_H_GAP) * (skillNum - 1);
 			}
 			displayWidget(cur);
 			action = 0;
@@ -1388,79 +1258,81 @@ int skillSelect(int player) {
 
 		case BACK:
 			SDL_Quit();
-			puts("back");
+			destroyTree(t2, free);
 			return BACK;
 			break;
-
 		case DONE:
 			SDL_Quit();
 			puts("quit");
-			if (player % 10 == MOUSE) {
-				game.mouse_skill = skill;
-				return 1;
-			}
-			if (player == CAT + MID_GAME) {
-				game.cat_skill = skill;
-				return 1;
-			}
-			if (player == CAT) {
-				game.cat_skill = skill;
-				//open window for mouse
-				if (humanSelect(MOUSE) == BACK) {
-					puts("back pressed");
-					WindowInitMacro
-					display = SDL_SetVideoMode(500, 500, 0,
-					SDL_HWSURFACE | SDL_DOUBLEBUF);
-					nonRecDFS(t2, displayWidget);
-
-					//display caption
-					displayWidget(createWidget(100, 100,
-					CAPTION_LOCATION_X, SKILL_CAT_CAPTION_LOCATION_Y,
-					CAPTION_WIDTH, CAPTION_HEIGHT, 0, "Buttons2.bmp", ""));
-					action = 0;
-				} else { //mouse skill select succeeded
+			if (selectionType == SAVE_GAME || selectionType == LOAD_GAME
+					|| selectionType == EDIT_GAME) {
+				destroyTree(t2, free);
+				return worldNum;
+			} else {
+				if (player % 10 == MOUSE) {
+					game.mouse_skill = skillNum;
+					destroyTree(t2, free);
 					return 1;
 				}
-			}
+				if (player == CAT + MID_GAME) {
+					game.cat_skill = skillNum;
+					destroyTree(t2, free);
+					return 1;
+				}
+				if (player == CAT) {
+					game.cat_skill = skillNum;
+					//open window for mouse
+					if (humanSelect(MOUSE) == BACK) {
+						puts("back pressed");
+						WindowInitMacro
+						display = SDL_SetVideoMode(500, 500, 0,
+						SDL_HWSURFACE | SDL_DOUBLEBUF);
+						nonRecDFS(t2, displayWidget);
+						displayCaptions(selectionType);
 
-			break;
-		} //end switch
-	} //end while
+						action = 0;
+					} else { //mouse skill select succeeded
+						destroyTree(t2, free);
+						return 1;
+					}
+				}
+				destroyTree(t2, free);
+				return skillNum;
+			}
+		}
+	}
+
 //SDL_Delay(2000);
 	SDL_Quit();
 	return -1;
-
 }
+
 int humanSelect(int player) {
 //return 1 if human selected correctly , otherwise on fail
 
 	printf("start player %d\n", player);
 	int i, action = 0;
 	WindowInitMacro;
-	display = SDL_SetVideoMode(500, 500, 0, SDL_HWSURFACE | SDL_DOUBLEBUF);
+	display = SDL_SetVideoMode(500, 500, 0,
+	SDL_HWSURFACE | SDL_DOUBLEBUF);
+
 	TreeRef t2 = newTree(createWidget(0, 0, 0, 0, 600, 800, 0, NULL, "hgh"));
-	insertChild(t2,
-			createWidget(100, 0 * 10 + 200 + 0 * BUTTON_HEIGHT, 6,
-					5 * BUTTON_HEIGHT - 3, BUTTON_WIDTH, BUTTON_HEIGHT - 6, 1,
-					"Buttons.bmp", ""));
-	for (i = 6; i < 8; i++) {
+
+	for (i = 5; i < 8; i++) {
 		Widget* b = createWidget(100,
 				(i - 5) * 10 + 200 + (i - 5) * BUTTON_HEIGHT, 6,
-				i * BUTTON_HEIGHT - 3, BUTTON_WIDTH, BUTTON_HEIGHT - 6, 0,
-				"Buttons.bmp", "");
+				10 + i * (BUTTON_HEIGHT + BUTTON_H_GAP), BUTTON_WIDTH,
+				BUTTON_HEIGHT, 0, "Buttons.bmp", "");
 		insertChild(t2, b);
 	}
-	nonRecDFS(t2, displayWidget);
+	getChildWidget(t2, 1)->isSelected = 1;
 
-//display caption
+	nonRecDFS(t2, displayWidget);
+	//display caption
 	if (player % 10 == CAT) {
-		displayWidget(createWidget(100, 100,
-		CAPTION_LOCATION_X, SELECT_CAT_CAPTION_LOCATION_Y,
-		CAPTION_WIDTH, CAPTION_HEIGHT - 8, 0, "Buttons2.bmp", ""));
+		displayCaptions(RECONF_CAT);
 	} else {
-		displayWidget(createWidget(85, 100,
-		CAPTION_LOCATION_X, SELECT_MOUSE_CAPTION_LOCATION_Y,
-		CAPTION_WIDTH, CAPTION_HEIGHT, 0, "Buttons2.bmp", ""));
+		displayCaptions(RECONF_MOUSE);
 	}
 
 	SDL_Event e;
@@ -1529,15 +1401,12 @@ int humanSelect(int player) {
 					switch (e.button.y) {
 					case HUMAN_LOCATION:
 						action = HUMAN;
-
 						break;
 					case MACHINE_LOCATION:
 						action = MACHINE;
-
 						break;
 					case U_SELECT_BACK_LOCATION:
 						action = BACK;
-
 						break;
 					}
 				}
@@ -1550,15 +1419,16 @@ int humanSelect(int player) {
 
 		case HUMAN:
 			SDL_Quit();
-			puts("human");
 
 			if (player % 10 == MOUSE) { // player is mouse
 				game.mouse_human = 1;
+				destroyTree(t2, free);
 				return 1;
 			}
 			if (player == CAT + MID_GAME) {
 				printf("player %d", player);
 				game.cat_human = 1;
+				destroyTree(t2, free);
 				return 1;
 			}
 			puts("try mouse");
@@ -1572,15 +1442,11 @@ int humanSelect(int player) {
 					nonRecDFS(t2, displayWidget);
 
 					//display caption
-
-					displayWidget(createWidget(100, 100,
-					CAPTION_LOCATION_X,
-					SELECT_CAT_CAPTION_LOCATION_Y,
-					CAPTION_WIDTH, CAPTION_HEIGHT - 8, 0, "Buttons2.bmp", ""));
-
+					displayCaptions(RECONF_CAT);
 					action = 0;
 				} else { // human select succeeded
 					SDL_Quit();
+					destroyTree(t2, free);
 					return 1;
 				}
 			}
@@ -1593,40 +1459,37 @@ int humanSelect(int player) {
 			//update gameOptions
 			if (player % 10 == CAT) {
 				game.cat_human = 0;
+				action = RECONF_CAT_SKILL;
 			} else {
 				game.mouse_human = 0;
+				action = RECONF_MOUSE_SKILL;
 			}
 
 			//open following windows
-			if (skillSelect(player) == BACK) { //skill was put back
+
+			if (worldSelect(action, -1, player) == BACK) { //skill was put back
 				WindowInitMacro
 				display = SDL_SetVideoMode(500, 500, 0,
 				SDL_HWSURFACE | SDL_DOUBLEBUF);
 				nonRecDFS(t2, displayWidget);
+
 				//display caption
 				if (player % 10 == CAT) {
-					displayWidget(createWidget(100, 100,
-					CAPTION_LOCATION_X,
-					SELECT_CAT_CAPTION_LOCATION_Y,
-					CAPTION_WIDTH, CAPTION_HEIGHT - 8, 0, "Buttons2.bmp", ""));
+					displayCaptions(RECONF_CAT);
 				} else {
-					displayWidget(createWidget(85, 100,
-					CAPTION_LOCATION_X,
-					SELECT_MOUSE_CAPTION_LOCATION_Y,
-					CAPTION_WIDTH, CAPTION_HEIGHT, 0, "Buttons2.bmp", ""));
+					displayCaptions(RECONF_MOUSE);
 				}
 				action = 0;
 			} else {
-				puts("success");
 				SDL_Quit();
+				destroyTree(t2, free);
 				return 1;
 
 			}
 			break;
 		case BACK:
-			printf("action= %d", action);
 			SDL_Quit();
-			puts("back");
+			destroyTree(t2, free);
 			return BACK;
 			break;
 		} //end switch
@@ -1640,89 +1503,78 @@ int humanSelect(int player) {
 int openEditorWindow(int gameNum) {
 
 	int i = 1, action = -1, direction = 0, selectedCellRow = 0,
-			selectedCellCol = 0, prevCol = 0, prevRow = 0;
+			selectedCellCol = 0, prevCol = 0, prevRow = 0, err = 0;
 
-	if (game.cat_human == -1 || game.mouse_human == -1) {
-		return -1;
-	}
-	//loading default game world #1
+	/*
+	 if (game.cat_human == -1 || game.mouse_human == -1) {
+	 return -1;
+	 }*/
+
 	char** board = loadGame(gameNum);
+
 	sprintf(turn, "editor");
 	//$$$ Check including it inside
-	updateGameStatus(board);
-
-	//parsing gameOption...
-	//TODO
+	updateBoardStatus(board);
 
 	WindowInitMacro;
-	display = SDL_SetVideoMode(826, 662, 0, SDL_HWSURFACE | SDL_DOUBLEBUF);
+	display = SDL_SetVideoMode(826, 662, 0,
+	SDL_HWSURFACE | SDL_DOUBLEBUF);
 
 	//TreeRef t2 = newTree(createWidget(0, 0, 0, 0, 826, 662, 0, NULL, "hgh"));
 	//nonRecDFS(t2, displayWidget);
 
-	TreeRef sidePanel = newTree(
-			createWidget(0, TOP_PANEL_HEIGHT, 0, 0, SIDE_PANEL_WIDTH,
-			GRID_HEIGHT, 0,
-			NULL, "hgh"));
+	TreeRef sidePanel = newTree(createWidget(0, TOP_PANEL_HEIGHT, 0, 0,
+	SIDE_PANEL_WIDTH,
+	GRID_HEIGHT, 0,
+	NULL, "Panel"));
 	for (i = 0; i < 5; i++) {
 		insertChild(sidePanel,
 				createWidget(20, 130 + BOARD_BUTTON_HEIGHT * i + 50 * i, 0,
 						(i + 5) * BOARD_BUTTON_HEIGHT,
 						BOARD_BUTTON_WIDTH, BOARD_BUTTON_HEIGHT, 0,
-						"Buttons2.bmp", ""));
+						"Buttons2.bmp", "Button"));
 	}
-	/*
-	 TreeRef frozenSidePanel = newTree(
-	 createWidget(0, TOP_PANEL_HEIGHT, PAUSED_SIDE_PANEL_LOCATION, 0,
-	 SIDE_PANEL_WIDTH, GRID_HEIGHT, 0, "Board.bmp", "hgh"));
-	 for (i = 0; i < 5; i++) {
-	 insertChild(frozenSidePanel,
-	 createWidget(20, 130 + BOARD_BUTTON_HEIGHT * i + 50 * i,
-	 BOARD_BUTTON_WIDTH, (i + 5) * BOARD_BUTTON_HEIGHT,
-	 BOARD_BUTTON_WIDTH, BOARD_BUTTON_HEIGHT, 0, "Buttons2.bmp",
-	 ""));
-	 }
-	 */
 
 	TreeRef topPanel = newTree(
-			createWidget(0, 310, 0, 0, 0, 0, 0, NULL, "hgh"));
+			createWidget(0, 310, 0, 0, 0, 0, 0, NULL, "Panel"));
 	for (i = 0; i < 3; i++) {
-		insertChild(topPanel, createWidget(10 + i * 300, 50, CAPTION_LOCATION_X,
-		LOAD_GAME_CAPTION_LOCATION_Y + CAPTION_HEIGHT,
+		insertChild(topPanel, createWidget(10 + i * 300, 50, 0,
+		BOARD_BUTTON_HEIGHT * (10 + i),
 		BOARD_BUTTON_WIDTH - 1,
 		BOARD_BUTTON_HEIGHT + 2, 0, "Buttons2.bmp", "hgh"));
 	}
-	getChildWidget(topPanel, 1)->srcX = 830;
-	getChildWidget(topPanel, 1)->srcY = 0;
-	getChildWidget(topPanel, 3)->srcX = 830 + BOARD_BUTTON_WIDTH;
-	getChildWidget(topPanel, 3)->srcY = 0 + BOARD_BUTTON_HEIGHT + 2;
+	WidgetRef gameNumCaption = createWidget(350, 10, WORLD_CAPTION_X,
+	WORLD_CAPTION_Y + (gameNum - 1) * (BUTTON_HEIGHT + BUTTON_H_GAP),
+	WORLD_CAPTION_WIDTH, WORLD_CAPTION_HEIGHT, 0, "Buttons.bmp",
+			"World # caption");
+	if (!gameNum) {
+		cheeseRow = cheeseCol = mouseRow = mouseCol = catRow = catCol = -1;
+		gameNumCaption->srcX = 461;
+		gameNumCaption->srcY = 64;
+		gameNumCaption->img_filename = "Buttons2.bmp";
+	}
+	insertChild(topPanel, gameNumCaption);
 
-	//nonRecDFS(topPanel, displayWidget);
-	nonRecDFS(boardToTree(board), displayWidget);
-	//nonRecDFS(sidePanel, printWidget);
-	//nonRecDFS(sidePanel, displayWidget);
+	TreeRef boardTree = boardToTree(board);
+
+	nonRecDFS(boardTree, displayWidget);
 	nonRecDFS(sidePanel, displayWidget);
-	//SDL_Delay(5000);
+	nonRecDFS(topPanel, displayWidget);
+	SDL_WM_SetCaption("World Editor", "");
 
-	SDL_Event e;
-
-	SDL_Rect curPos;
-	curPos.x = TOP_PANEL_HEIGHT;
-	curPos.y = SIDE_PANEL_WIDTH;
-	curPos.w = CELL_WIDTH;
-	curPos.h = CELL_HEIGHT;
-
-	pink = createWidget(SIDE_PANEL_WIDTH, TOP_PANEL_HEIGHT, PINK_CELL_X,
+	//init pink cell
+	pink = createWidget(SIDE_PANEL_WIDTH, TOP_PANEL_HEIGHT,
+	PINK_CELL_X,
 	PINK_CELL_Y,
-	CELL_WIDTH + 2, CELL_HEIGHT - 4, 0, "Board.bmp", "");
+	CELL_WIDTH, CELL_HEIGHT - 4, 0, "Board.bmp", "");
 
 	displayWidget(pink);
+
+	SDL_Event e;
 	while (action != QUIT) {
 
 		if (action != 0) {
 			puts("refreshing");
-
-			nonRecDFS(topPanel, displayWidget);
 
 			action = 0;
 			direction = 0;
@@ -1753,7 +1605,7 @@ int openEditorWindow(int gameNum) {
 					direction = RIGHT;
 					break;
 				case SDLK_ESCAPE:
-					action = QUIT;
+					action = BACK;
 					break;
 				case (SDLK_SPACE):
 					action = PLACE_EMPTY;
@@ -1770,6 +1622,10 @@ int openEditorWindow(int gameNum) {
 				case (SDLK_w):
 					action = PLACE_WALL;
 					break;
+				case (SDLK_s):
+					action = SAVE_GAME;
+					break;
+
 				default:
 					break;
 				} //end switch-keyup
@@ -1777,33 +1633,52 @@ int openEditorWindow(int gameNum) {
 
 			case (SDL_MOUSEBUTTONUP):
 
-				if ((e.button.x > SIDE_PANEL_WIDTH)
-						&& (e.button.x < 862)
+				if ((e.button.x > SIDE_PANEL_WIDTH) && (e.button.x < 862)
 						&& (e.button.y > TOP_PANEL_HEIGHT)
 						&& (e.button.y < 662)) {
-					action=WARP;
-					selectedCellCol= (e.button.y-TOP_PANEL_HEIGHT)/CELL_HEIGHT;
-					selectedCellRow= (e.button.x-SIDE_PANEL_WIDTH)/CELL_WIDTH;
+					action = WARP;
+					selectedCellRow = (e.button.y - TOP_PANEL_HEIGHT)
+							/ CELL_HEIGHT;
+					selectedCellCol = (e.button.x - SIDE_PANEL_WIDTH)
+							/ CELL_WIDTH;
+					printf("row %d, col %d\n", selectedCellRow,
+							selectedCellCol);
 
-				/*} else if ((e.button.x > getChildWidget(topPanel, 3)->x)
-						&& (e.button.x
-								< getChildWidget(topPanel, 3)->x
-										+ SPACE_BUTTON_WIDTH)
-						&& (e.button.y > getChildWidget(topPanel, 3)->y)
+				} else if (
+
+				/*(e.button.x > 10)
+				 && (e.button.x
+				 < 10
+				 + BOARD_BUTTON_WIDTH)*/
+				(e.button.y > getChildWidget(topPanel, 1)->y)
 						&& (e.button.y
-								< getChildWidget(topPanel, 3)->y
-										+ SPACE_BUTTON_HEIGHT)) {*/
-				} else if (e.button.x > 20
+								< getChildWidget(topPanel, 1)->y
+										+ BOARD_BUTTON_HEIGHT)) {
+					switch (e.button.x) {
+					case SAVE_GAME_LOCATION:
+						action = SAVE_GAME;
+						break;
+					case RETURN_TO_MAIN_EDIT_LOCATION:
+						action = BACK;
+						break;
+					case QUIT_PROG_EDIT_LOCATION:
+						action = QUIT;
+						break;
+					}
+
+				}
+
+				else if (e.button.x > 20
 						&& e.button.x < (20 + BOARD_BUTTON_WIDTH)) {
-					printf ("y: %d\n", e.button.y);
+					printf("y: %d\n", e.button.y);
 					switch (e.button.y) {
 
 					case PLACE_MOUSE_LOCATION:
 						action = PLACE_MOUSE;
-						puts ("place mouse");
+						puts("place mouse");
 						break;
 					case PLACE_CAT_LOCATION:
-						puts ("place cat");
+						puts("place cat");
 						action = PLACE_CAT;
 						break;
 					case PLACE_CHEESE_LOCATION:
@@ -1823,36 +1698,171 @@ int openEditorWindow(int gameNum) {
 
 		} //end pollevent
 		switch (action) {
-		case PLACE_CHEESE:
-			board[selectedCellRow][selectedCellCol] = 'P';
-			updateGrid(0, 'P', 'P');
-			break;
-		case PLACE_WALL:
-			board[selectedCellRow][selectedCellCol] = 'W';
-			updateGrid(0, 'W', 'W');
-			break;
-		case PLACE_CAT:
-			board[selectedCellRow][selectedCellCol] = 'C';
-			updateGrid(0, 'C', 'C');
-			break;
-		case PLACE_MOUSE:
-			board[selectedCellRow][selectedCellCol] = 'M';
-			updateGrid(0, 'M', 'M');
-			break;
-		case PLACE_EMPTY:
-			board[selectedCellRow][selectedCellCol] = '#';
-			updateGrid(0, '#', '#');
-			break;
-		case QUIT:
-			puts("quit");
+		case SAVE_GAME:
 			SDL_Quit();
-			freeBoard(board);
-			exit(0);
+			err = checkBoard(board);
+			printf("%d\n", err);
+			if (err) {
+
+				SaveErrorMsgWindow(err);
+
+			} //end switch checkboard
+			else {
+				sprintf(turn, "cat");
+				max_turns = 20;
+				gameNum = worldSelect(SAVE_GAME, 1, -1);
+				if (gameNum != BACK) {
+					saveGame(board, gameNum);
+				}
+				sprintf(turn, "editor");
+			}
+			//reopen editor window
+			WindowInitMacro
+
+			display = SDL_SetVideoMode(826, 662, 0,
+			SDL_HWSURFACE | SDL_DOUBLEBUF);
+
+			gameNumCaption->srcX = WORLD_CAPTION_X;
+			gameNumCaption->srcY = WORLD_CAPTION_Y
+					+ (gameNum - 1) * (BUTTON_HEIGHT + BUTTON_H_GAP);
+			gameNumCaption->img_filename = "Buttons.bmp";
+
+			puts(gameNumCaption->img_filename);
+			//sprintf (gameNumCaption->img_filename, "Buttons.bmp");
+			puts("back from save");
+			nonRecDFS(boardTree, displayWidget);
+			nonRecDFS(sidePanel, displayWidget);
+			nonRecDFS(topPanel, displayWidget);
+			displayWidget(gameNumCaption);
+			SDL_WM_SetCaption("World Editor", "");
+			updateGridWarp(board, -1, -1, selectedCellRow, selectedCellCol);
+			//displayWidget(pink);
+
 			break;
+		case PLACE_CHEESE:
+			puts("place cheese");
+			if (selectedCellRow == cheeseRow && selectedCellCol == cheeseCol) {
+				break;
+			}
+
+			switch (board[selectedCellRow][selectedCellCol]) {
+			case 'C':
+				catCol = -1;
+				catRow = -1;
+				break;
+			case 'M':
+				mouseCol = -1;
+				mouseRow = -1;
+				break;
+
+			}
+			board[selectedCellRow][selectedCellCol] = 'P';
+			if (cheeseRow > -1 && cheeseCol > -1) {
+				printf("cheeseRow %d %d", cheeseRow, cheeseCol);
+				board[cheeseRow][cheeseCol] = '#';
+			}
+			updateGridWarp(board, cheeseRow, cheeseCol, selectedCellRow,
+					selectedCellCol);
+
+			cheeseRow = selectedCellRow;
+			cheeseCol = selectedCellCol;
+			break;
+
+		case PLACE_WALL:
+		case PLACE_EMPTY:
+			switch (board[selectedCellRow][selectedCellCol]) {
+			case 'C':
+				catCol = -1;
+				catRow = -1;
+				break;
+			case 'M':
+				mouseCol = -1;
+				mouseRow = -1;
+				break;
+			case 'P':
+				cheeseCol = -1;
+				cheeseRow = -1;
+				break;
+			}
+			if (action == PLACE_EMPTY) {
+				board[selectedCellRow][selectedCellCol] = '#';
+			} else {
+				board[selectedCellRow][selectedCellCol] = 'W';
+			}
+			updateGridWarp(board, -1, -1, selectedCellRow, selectedCellCol);
+			//updateGridAdj(0, 'W', 'W');
+			break;
+
+		case PLACE_CAT:
+			puts("place cat");
+			if (selectedCellRow == catRow && selectedCellCol == catCol) {
+				break;
+			}
+
+			switch (board[selectedCellRow][selectedCellCol]) {
+			case 'P':
+				cheeseCol = -1;
+				cheeseRow = -1;
+				break;
+			case 'M':
+				mouseCol = -1;
+				mouseRow = -1;
+				break;
+			}
+			board[selectedCellRow][selectedCellCol] = 'C';
+			if (catRow > -1 && catCol > -1) {
+				board[catRow][catCol] = '#';
+
+			}
+			updateGridWarp(board, catRow, catCol, selectedCellRow,
+					selectedCellCol);
+
+			catRow = selectedCellRow;
+			catCol = selectedCellCol;
+			break;
+
+		case PLACE_MOUSE:
+
+			if (selectedCellRow == mouseRow && selectedCellCol == mouseCol) {
+				break;
+			}
+
+			switch (board[selectedCellRow][selectedCellCol]) {
+			case 'C':
+				catCol = -1;
+				catRow = -1;
+				break;
+			case 'P':
+				cheeseCol = -1;
+				cheeseRow = -1;
+				break;
+			}
+			board[selectedCellRow][selectedCellCol] = 'M';
+			if (mouseRow > -1 && mouseCol > -1) {
+				board[mouseRow][mouseCol] = '#';
+			}
+
+			updateGridWarp(board, mouseRow, mouseCol, selectedCellRow,
+					selectedCellCol);
+			mouseRow = selectedCellRow;
+			mouseCol = selectedCellCol;
+			break;
+
+		case QUIT:
 		case BACK:
 			SDL_Quit();
-			return 1;
+			destroyTree(sidePanel, free);
+			destroyTree(topPanel, free);
+			destroyTree(boardTree, free);
+			free(pink);
+			freeBoard(board);
+			if (action == BACK) {
+				return 1;
+			} else {
+				exit(0);
+			}
 			break;
+
 		case MOVE:
 			if ((pink->x == SIDE_PANEL_WIDTH && direction == LEFT)
 					|| (pink->x == SIDE_PANEL_WIDTH + 6 * CELL_WIDTH
@@ -1862,9 +1872,8 @@ int openEditorWindow(int gameNum) {
 							&& direction == DOWN)) {
 				break;
 			} else { // move is possible
-				puts ("change");
-				prevCol = selectedCellCol;
-				prevRow = selectedCellRow;
+				puts("change");
+
 				switch (direction) {
 				case RIGHT:
 					selectedCellCol++;
@@ -1880,28 +1889,192 @@ int openEditorWindow(int gameNum) {
 					break;
 				}
 				printf("%c", board[selectedCellRow][selectedCellCol]);
-				updateGrid(direction, board[selectedCellRow][selectedCellCol],
-						board[prevRow][prevCol]);
+				updateGridWarp(board, prevRow, prevCol, selectedCellRow,
+						selectedCellCol);
+				prevCol = selectedCellCol;
+				prevRow = selectedCellRow;
 			}
 			break;
 		case WARP:
-
-			pink->y= TOP_PANEL_HEIGHT+selectedCellCol*CELL_HEIGHT;
-			pink->x=SIDE_PANEL_WIDTH+selectedCellRow*CELL_WIDTH;
-
-			puts ("warp");
-			printf ("%d\n", pink->y);
-			printf ("%d\n", pink->x);
-
-			updateGrid(direction, board[prevRow][prevCol],
-									board[prevRow][prevCol]);
-
+			updateGridWarp(board, prevRow, prevCol, selectedCellRow,
+					selectedCellCol);
+			prevCol = selectedCellCol;
+			prevRow = selectedCellRow;
 			break;
 		} //end switch
 
 	} //while action
-//SDL_Delay(5000);
 	SDL_Quit();
 
 	return 1;
+}
+
+void updateGridWarp(char** board, int prevRow, int prevCol, int newRow,
+		int newCol) {
+	//puts("updateGridWarp");
+	//printBoard(board);
+	WidgetRef temp = pink;
+
+//draw prevCol
+
+	printf("newrow %d newcol %d %c \n ", newRow, newCol, board[newRow][newCol]);
+
+	if (prevCol > -1 && prevRow > -1) {
+
+		//set prevLocation
+
+		pink->y = TOP_PANEL_HEIGHT + prevRow * CELL_HEIGHT;
+		pink->x = SIDE_PANEL_WIDTH + prevCol * CELL_WIDTH;
+
+		//draw empty first
+		temp->srcY = TOP_PANEL_HEIGHT;
+		temp->srcX = SIDE_PANEL_WIDTH;
+		displayWidget(temp);
+		//draw actual
+
+		temp->width -= 14;
+		switch (board[prevRow][prevCol]) {
+		case 'C':
+			temp->x += 3;
+			temp->srcX = CAT_LOCATION - 2;
+			temp->srcY = 0;
+			displayWidget(temp);
+			temp->x -= 3;
+			break;
+		case 'M':
+			temp->x += 3;
+			temp->srcX = MOUSE_LOCATION;
+			temp->srcY = 0;
+			displayWidget(temp);
+			temp->x -= 3;
+			break;
+		case 'P':
+			temp->x += 3;
+			temp->srcX = CHEESE_LOCATION;
+			temp->srcY = 0;
+			displayWidget(temp);
+			temp->x -= 3;
+			break;
+		case 'W':
+			temp->x += 4;
+			temp->srcX = WALL_LOCATION;
+			temp->srcY = 0;
+			displayWidget(temp);
+			temp->x -= 4;
+			break;
+
+		} //end switch prevcell content
+		temp->width += 14;
+	}
+//warp to new location
+	pink->y = TOP_PANEL_HEIGHT + newRow * CELL_HEIGHT;
+	pink->x = SIDE_PANEL_WIDTH + newCol * CELL_WIDTH;
+
+// print new cell
+	/*
+	 printf ("row %d col %d %c \n " , newRow, newCol, board[newRow][newCol] );
+	 */
+	temp->srcY = TOP_PANEL_HEIGHT;
+	temp->srcX = SIDE_PANEL_WIDTH;
+	displayWidget(temp);
+
+	temp->srcY = YELLOW_Y;
+	switch (board[newRow][newCol]) {
+	case 'C':
+		temp->width -= 5;
+		temp->x += 3;
+		temp->srcX = CAT_LOCATION - 2;
+		break;
+	case 'M':
+		temp->width -= 5;
+		temp->x += 3;
+		temp->srcX = MOUSE_LOCATION;
+		break;
+	case 'P':
+		temp->width -= 5;
+		temp->x += 3;
+		temp->srcX = CHEESE_LOCATION;
+		break;
+	case 'W':
+		temp->width -= 4;
+		temp->x += 4;
+		temp->srcX = WALL_LOCATION;
+		break;
+	default:
+		temp->srcX = PINK_CELL_X;
+		temp->srcY = PINK_CELL_Y;
+		break;
+	} //end switch newcell content
+
+	displayWidget(temp);
+
+//fix widths and xs
+
+	switch (board[newRow][newCol]) {
+	case 'C':
+	case 'M':
+	case 'P':
+		temp->width += 5;
+		temp->x -= 3;
+		break;
+	case 'W':
+		temp->width += 4;
+		temp->x -= 4;
+		break;
+	}
+}
+
+int SaveErrorMsgWindow(int err) {
+	int action;
+	SDL_Event e;
+	WindowInitMacro;
+	display = SDL_SetVideoMode(500, 300, 0,
+	SDL_HWSURFACE | SDL_DOUBLEBUF);
+	TreeRef t2 = newTree(createWidget(0, 0, 0, 0, 600, 800, 0, NULL, "hgh"));
+	insertChild(t2, createWidget(110, 50,
+	CAPTION_LOCATION_X, 23 + (CAPTION_HEIGHT - 2) * 7 - 8,
+	CAPTION_WIDTH - 50, CAPTION_HEIGHT, 0, "Buttons2.bmp", ""));
+	insertChild(t2, createWidget(110, 120,
+	CAPTION_LOCATION_X, 23 + (CAPTION_HEIGHT - 2) * (7 + err) - 8,
+	CAPTION_WIDTH - 50, CAPTION_HEIGHT, 0, "Buttons2.bmp", ""));
+
+	insertChild(t2, createWidget(100, 200, 4, BUTTON_HEIGHT * 7 - 8,
+	BUTTON_WIDTH, BUTTON_HEIGHT, 1, "Buttons.bmp", ""));
+
+	nonRecDFS(t2, displayWidget);
+	while (action != QUIT) {
+
+		if (action != 0) {
+			puts("refreshing");
+
+			action = 0;
+		}
+
+		while (SDL_PollEvent(&e) != 0) {
+			switch (e.type) {
+			case (SDL_QUIT):
+				action = BACK;
+				break;
+			case (SDL_KEYUP):
+				if (e.key.keysym.sym == SDLK_ESCAPE) {
+					action = BACK;
+				}
+				break; //break keyup
+			case (SDL_MOUSEBUTTONUP):
+				if (e.button.x > 100&& e.button.x < 100 + BUTTON_WIDTH
+				&& e.button.y > 200
+				&& e.button.y < 200 + BOARD_BUTTON_HEIGHT) {
+					action = BACK;
+				} //end if
+				break; //break mouseup
+			} //end switch e-type
+		} //end pollevent
+		if (action == BACK) {
+			SDL_Quit();
+			return 1;
+			break;
+		} //end if
+
+	} //while action
+	return 0;
 }

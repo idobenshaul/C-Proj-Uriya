@@ -46,14 +46,21 @@ int evalFunc(void* state){
 			}
 		}
 	}
+<<<<<<< HEAD
     //char*** board =(char***) &(state);
     //printf("YUVAL\n");
     //printBoard(*board);
+=======
+	//char*** board =(char***) &(state);
+	//printf("YUVAL\n");
+	//printBoard(*board);
+>>>>>>> ae0cc88eeaa32c526beff2b7fe7c75bd944b2cdb
 	printf("NOW ENTERING MORDOR W/ FOLLOWING BOARD\n");
 	printBoard(*board);
 	//printf("shit's about to get real:\n");
 	//int a;
 	//scanf("%d",a);
+<<<<<<< HEAD
 	int DCatMouse=findNeighborBFS(board, catR,catC,mouseR,mouseC);
 	if(DCatMouse==1){
         if(strcmp(turn,"cat")==0){
@@ -74,6 +81,83 @@ int evalFunc(void* state){
             return 199999;
         }
 
+=======
+	int DCatMouse = findNeighborBFS(board, catR, catC, mouseR, mouseC);
+	//int DCatMouse=findShortestPath(board, catR,catC,mouseR,mouseC);
+	int DMouseCheese = findNeighborBFS(board, mouseR, mouseC, cheeseR, cheeseC);
+	//int DCatMouse= ((catR-mouseR)*(catR-mouseR)+(catC-mouseC)*(catC-mouseC));
+	//int DMouseCheese= ((cheeseR-mouseR)*(cheeseR-mouseR)+(cheeseC-mouseC)*(cheeseC-mouseC));
+	//DCatMouse=DCatMouse*DCatMouse;
+	//DMouseCheese=DMouseCheese*DMouseCheese;
+	printf("the current board\n");
+	printBoard(*board);
+	printf("and the current eval =%d\n", DMouseCheese - DCatMouse);
+	return DMouseCheese - DCatMouse;
+
+}
+findNeighborBFS(char***board, int srcR, int srcC, int destR, int destC) {
+	///CHANGE NAMES, VERY CONFUSING!!
+	int cnt = 199999;
+	int a;
+	//up
+	findShortestPath(board, srcR, srcC, destR - 1, destC);
+	//int ** dist=(int**)(returnDist());
+	printf("src(%d,%d) to dest(%d,%d) FIRST NEIGHBOR\n", srcR, srcC, destR - 1,
+			destC);
+	if ((destR - 1) >= 0) {
+		if ((*board)[destR - 1][destC] != 'W') {
+			a = dist[destR - 1][destC];
+			if (a < cnt) {
+				cnt = a;
+			}
+		}
+	}
+	//right
+	printf("src(%d,%d) to dest(%d,%d) SECOND NEIGHBOR\n", srcR, srcC, destR,
+			destC + 1);
+	if ((destC + 1) <= 6) {
+		if ((*board)[destR][destC + 1] != 'W') {
+			a = dist[destR][destC + 1];
+			if (a < cnt) {
+				cnt = a;
+			}
+		}
+	}
+	//down
+	printf("src(%d,%d) to dest(%d,%d) THIRD NEIGHBOR\n", srcR, srcC, destR + 1,
+			destC);
+	if ((destR + 1) <= 6) {
+		if ((*board)[destR + 1][destC] != 'W') {
+			a = dist[destR + 1][destC];
+			if (a < cnt) {
+				cnt = a;
+			}
+		}
+	}
+	//left
+	printf("src(%d,%d) to dest(%d,%d) FOURTH NEIGHBOR\n", srcR, srcC, destR,
+			destC - 1);
+	//int ork_I;
+	//printf("they're taking the hobbits to eizengard!! (Lagolas)\n");
+	//scanf("%d", &ork_I);
+	if ((destC - 1) >= 0) {
+		if ((*board)[destR][destC - 1] != 'W') {
+			a = dist[destR][destC - 1];
+			if (a < cnt) {
+				cnt = a;
+			}
+		}
+	}
+	return cnt + 1;
+
+}
+void copyArray(char *** original, char ***copy) {    ////////for int[6][7]
+	int i = 0, j = 0;
+	for (i = 0; i < 7; i++) {
+		for (j = 0; j < 7; j++) {
+			(*copy)[i][j] = (*original)[i][j];
+		}
+>>>>>>> ae0cc88eeaa32c526beff2b7fe7c75bd944b2cdb
 	}
     //int DCatMouse= ((catR-mouseR)*(catR-mouseR)+(catC-mouseC)*(catC-mouseC));
     //int DMouseCheese= ((cheeseR-mouseR)*(cheeseR-mouseR)+(cheeseC-mouseC)*(cheeseC-mouseC));
@@ -151,6 +235,7 @@ void copyArray(char *** original, char ***copy){////////for int[6][7]
 ListRef getChildrenStates (void* state){
 	//printf ("getChildren started\n");
 	//int turn=countTurn(state);//
+<<<<<<< HEAD
 	char ***board= (char ***) state;
 	int i=0,j=0;
 	ListRef children=newList(NULL);
@@ -198,6 +283,53 @@ ListRef getChildrenStates (void* state){
         }
     }
 
+=======
+	char ***board = (char ***) state;
+	int i = 0, j = 0;
+	ListRef children = newList(NULL);
+	char** curState;
+	Child** states[4];
+	Child* childs[4];
+	Child* curChild;
+	//int realRow,realCol;
+	for (i = 0; i < 4; i++) {
+		curState = (char**) malloc(7 * sizeof(char*));
+		for (j = 0; j < 7; j++) {
+			curState[j] = (char*) malloc(7 * sizeof(char));
+		}
+		board_init(&curState);
+		copyArray(board, &curState);
+		updateBoardStatus(curState);
+		//printf("printing the %d'th direction before move!!\n", i+1);
+		//printBoard(curState);
+		childs[i] = (Child*) malloc(sizeof(Child));
+		if (move(&curState, i + 1) == 1) {
+			printf("printing the %d'th direction\n", i + 1);
+			printBoard(curState);
+			//childs[i]=(Child*)malloc(sizeof(Child));
+			childs[i]->state = curState;
+			//childs[i]->result.value=evalFunc(&(childs[i]->state));
+			childs[i]->result.index = i + 1;
+			//states[i]=(Child**)(&childs[i]);
+		} else {
+
+			childs[i]->state = NULL;
+		}
+		states[i] = (Child**) (&childs[i]);
+	}
+
+	//printf("printing the board after the loop\n");
+	//printBoard(*board);
+	updateBoardStatus(*board);
+	for (i = 0; i < 4; i++) {
+		Child a = *(*(states[i]));
+		if (a.state != NULL) {
+			append(children, (Child*) *(states[i]));
+			printf("now printing children, %d\n", i + 1);
+			printf("%d\n", ((Child*) *(states[i]))->result.value);
+		}
+	}
+>>>>>>> ae0cc88eeaa32c526beff2b7fe7c75bd944b2cdb
 
 	return children;
 }
@@ -253,20 +385,57 @@ struct MiniMaxResult wrapGetBestChild(int actualCatRow, int actualCatCol,
 	/////////////////////////////////////////////////////////////////////////////
 	return temp;
 }
+<<<<<<< HEAD
 int main(int argc, char* args[]) {
 
 	setvbuf(stdout, NULL, _IONBF, 0);
 	gameOptions game = { 0, 1, 1, 0 };
     int moveWork=-17;
+=======
+struct MiniMaxResult wrapGetBestChild(int actualCatRow, int actualCatCol,
+		int actualMouseRow, int actualMouseCol, void* state,
+		unsigned int maxDepth, ListRef (*getChildren)(void* state),
+		FreeFunc freeState, int (*evaluate)(void* state), int isMaxPlayer) {
+
+	struct MiniMaxResult temp;
+	temp = getBestChild(state, maxDepth, getChildren, freeState, evaluate,
+			isMaxPlayer);
+	mouseRow = actualMouseRow;
+	mouseCol = actualMouseCol;
+	catRow = actualCatRow;
+	catCol = actualCatCol;
+	//makeOriginalBoard(board);
+	/////////////////////////////////////////////////////////////////////////////
+
+	if (isOriginalTurn == 0) {
+		switchTurn();
+		switchIsOriginalTurn();
+	}
+	return temp;
+}
+int consoleMode(int argc, char* args[]) {
+
+	setvbuf(stdout, NULL, _IONBF, 0);
+	gameOptions game = { 0, 1, 4, 0 };
+	int moveWork = -17, direction = -1;
+>>>>>>> ae0cc88eeaa32c526beff2b7fe7c75bd944b2cdb
 	char temp[7];
 	char** board; //7*7 board
 	board = loadGame(1);
-	printf("result %d\n", updateGameStatus(board));
+	printf("result %d\n", updateBoardStatus(board));
 	printf("cat %d %d", catRow, catCol);
+<<<<<<< HEAD
 	while (!updateGameStatus(board)) {
         ///we'll use Cat as maxPlayer:1, and Mouse as maxPlayer:0
         ///same goes for comp1 and comp2
         int actualCatRow=catRow, actualCatCol=catCol,actualMouseRow=mouseRow, actualMouseCol=mouseCol;
+=======
+	while (!updateBoardStatus(board)) {
+		///we'll use Cat as maxPlayer:1, and Mouse as maxPlayer:0
+		///same goes for comp1 and comp2
+		int actualCatRow = catRow, actualCatCol = catCol, actualMouseRow =
+				mouseRow, actualMouseCol = mouseCol;
+>>>>>>> ae0cc88eeaa32c526beff2b7fe7c75bd944b2cdb
 		printBoard(board);
 		//isOriginalTurn=1;
 
@@ -275,6 +444,7 @@ int main(int argc, char* args[]) {
 				|| (game.mouse_human==1 && strcmp(turn, "mouse")==0)) {
 			printf("%s's turn- type a move please (U/D/L/R): \n", turn);
 			scanf("%s", temp);
+<<<<<<< HEAD
 		} //end human move
 		else { //machine move
 			if (strcmp(turn, "cat") == 0) {
@@ -284,13 +454,42 @@ int main(int argc, char* args[]) {
 
 			} else { //(strcmp(turn, "mouse")==0)
 				temp[0] =
+=======
+
+			switch (temp[0]) {
+			case 'L':
+				direction = LEFT;
+				break;
+			case 'R':
+				direction = RIGHT;
+				break;
+			case 'U':
+				direction = UP;
+				break;
+			case 'D':
+				direction = DOWN;
+				break;
+
+			} //end switch
+		} //end human move
+		else { //machine move
+			if (strcmp(turn, "cat") == 0) {
+				direction = wrapGetBestChild(actualCatRow, actualCatCol,
+						actualMouseRow, actualMouseCol, &board, game.cat_skill,
+						getChildrenStates, free, evalFunc, 1).index;
+			} else { //(strcmp(turn, "mouse")==0)
+				direction =
+>>>>>>> ae0cc88eeaa32c526beff2b7fe7c75bd944b2cdb
 						wrapGetBestChild(actualCatRow, actualCatCol,
 								actualMouseRow, actualMouseCol, &board,
 								game.mouse_skill, getChildrenStates, free,
 								evalFunc, 1).index;
 			}
 		}
+		//TODO - is this neccesary?
+		//makeOriginalBoard(board);
 
+<<<<<<< HEAD
 		/////////////////////////////////////////////////////////////////////////////
         isActiveMinimax=0;
 		switch (temp[0]) {
@@ -321,8 +520,15 @@ int main(int argc, char* args[]) {
 		/* 1: to bring the turn back if it got altered in the
 		recursion, 2: to make the turn stay the same if the move we attempted
 		to do was illegal, and 3: to switch turn at the end of the loop*/
+=======
+		if (move(&board, direction)) {
+			switchTurn();
+		}
+
+
+>>>>>>> ae0cc88eeaa32c526beff2b7fe7c75bd944b2cdb
 	}
-	switch (updateGameStatus(board)) {
+	switch (updateBoardStatus(board)) {
 	case 0:
 		printf("Game over. tie.\n");
 		break;
@@ -334,13 +540,17 @@ int main(int argc, char* args[]) {
 		break;
 	}
 	printBoard(board);
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> ae0cc88eeaa32c526beff2b7fe7c75bd944b2cdb
 	freeBoard(board);
 	return 0;
 }
 
 int isLegalMove(char*** board, int srcRow, int srcCol, int direction) {
+<<<<<<< HEAD
     //returns 1 if desired move is legal
 
     if (direction == LEFT && srcCol > 0 && (*board)[srcRow][srcCol - 1] == '#')
@@ -352,61 +562,97 @@ int isLegalMove(char*** board, int srcRow, int srcCol, int direction) {
     if (direction == UP && srcRow > 0 && (*board)[srcRow - 1][srcCol] == '#')
         return 1;
     return 0;
+=======
+	//returns 1 if desired move is legal
+
+	if (direction == LEFT && srcCol > 0 && (*board)[srcRow][srcCol - 1] == '#')
+		return 1;
+	if (direction == RIGHT && srcCol < 6 && (*board)[srcRow][srcCol + 1] == '#')
+		return 1;
+	if (direction == DOWN && srcRow < 6 && (*board)[srcRow + 1][srcCol] == '#')
+		return 1;
+	if (direction == UP && srcRow > 0 && (*board)[srcRow - 1][srcCol] == '#')
+		return 1;
+	return 0;
+>>>>>>> ae0cc88eeaa32c526beff2b7fe7c75bd944b2cdb
 
 }
 /*
 int move(char*** board, int direction) {
-
 //returns 1 if move was valid and made, 0 on fail;
 	if (!strcmp(turn, "cat")) {
-		//printf("legal move: %d", isLegalMove(board, catRow, catCol, direction));
-
-		if (isLegalMove(board, catRow, catCol, direction)) {
+		if (!isLegalMove(board, catRow, catCol, direction)) {
+			return 0;
+		}
+	}
+	if (!strcmp(turn, "mouse")) {
+		if (isLegalMove(board, mouseRow, mouseCol, direction) != 1) {
+			return 0;
+		}
+	}
+	if (!strcmp(turn, "cat")) {
+		if (direction == LEFT && catCol > 0
+				&& (*board)[catRow][catCol - 1] != 'W'
+				&& (*board)[catRow][catCol - 1] != 'P') {
 			(*board)[catRow][catCol] = '#';
-			switch (direction) {
-
-			case LEFT:
-				catCol--;
-				break;
-			case RIGHT:
-				catCol++;
-				break;
-			case DOWN:
-				catRow++;
-				break;
-			case UP:
-				catRow--;
-				break;
-			}
+			catCol--;
 			(*board)[catRow][catCol] = 'C';
 			return 1;
-		} //end if
-	} //end cat
-
+		}
+		if (direction == RIGHT && catCol < 6
+				&& (*board)[catRow][catCol + 1] != 'W'
+				&& (*board)[catRow][catCol + 1] != 'P') {
+			(*board)[catRow][catCol] = '#';
+			catCol++;
+			(*board)[catRow][catCol] = 'C';
+			return 1;
+		}
+		if (direction == DOWN && catRow < 6
+				&& (*board)[catRow + 1][catCol] != 'W'
+				&& (*board)[catRow + 1][catCol] != 'P') {
+			(*board)[catRow][catCol] = '#';
+			catRow++;
+			(*board)[catRow][catCol] = 'C';
+			return 1;
+		}
+		if (direction == UP && catRow > 0 && (*board)[catRow - 1][catCol] != 'W'
+				&& (*board)[catRow - 1][catCol] != 'P') {
+			(*board)[catRow][catCol] = '#';
+			catRow--;
+			(*board)[catRow][catCol] = 'C';
+			return 1;
+		}
+	}
 	if (!strcmp(turn, "mouse")) {
-
-		if (isLegalMove(board, mouseRow, mouseCol, direction)) {
+		if (direction == LEFT && mouseCol > 0
+				&& (*board)[mouseRow][mouseCol - 1] != 'W') {
 			(*board)[mouseRow][mouseCol] = '#';
-			switch (direction) {
-
-			case LEFT:
-				mouseCol--;
-				break;
-			case RIGHT:
-				mouseCol++;
-				break;
-			case DOWN:
-				mouseRow++;
-				break;
-			case UP:
-				mouseRow--;
-				break;
-			}
+			mouseCol--;
 			(*board)[mouseRow][mouseCol] = 'M';
 			return 1;
-		} //end if
-	} //end mouse
-
+		}
+		if (direction == RIGHT && mouseCol < 6
+				&& (*board)[mouseRow][mouseCol + 1] != 'W') {
+			(*board)[mouseRow][mouseCol] = '#';
+			mouseCol++;
+			(*board)[mouseRow][mouseCol] = 'M';
+			return 1;
+		}
+		if (direction == DOWN && mouseRow < 6
+				&& (*board)[mouseRow + 1][mouseCol] != 'W') {
+			(*board)[mouseRow][mouseCol] = '#';
+			mouseRow++;
+			(*board)[mouseRow][mouseCol] = 'M';
+			return 1;
+		}
+		if (direction == UP && mouseRow > 0
+				&& (*board)[mouseRow - 1][mouseCol] != 'W') {
+			(*board)[mouseRow][mouseCol] = '#';
+			mouseRow--;
+			(*board)[mouseRow][mouseCol] = 'M';
+			return 1;
+		}
+	}
 	return 0;
 }*/
 
@@ -513,6 +759,7 @@ void makeOriginalBoard(char** board){
             temp = board[i][j];
 			switch (temp) {
 			case 'M':
+<<<<<<< HEAD
 			    if(i!=mouseRow || j!=mouseCol){
                     board[i][j]="#";
                     board[mouseRow][mouseCol]="M";
@@ -531,8 +778,28 @@ void makeOriginalBoard(char** board){
     printBoard(board);
     //board[mouseRow][mouseCol]="M";
     //board[catRow][catCol]="C";
+=======
+				if (i != mouseRow || j != mouseCol) {
+					board[i][j] = '#';
+					board[mouseRow][mouseCol] = 'M';
+				}
+				break;
+			case 'C':
+				if (i != catRow || j != catCol) {
+					board[i][j] = '#';
+					board[catRow][catCol] = 'C';
+				}
+				break;
+			}
+		}
+	}
+	printf("printing board in makeOriginalBoard\n");
+	printBoard(board);
+	//board[mouseRow][mouseCol]="M";
+	//board[catRow][catCol]="C";
+>>>>>>> ae0cc88eeaa32c526beff2b7fe7c75bd944b2cdb
 }
-int updateGameStatus(char** board) {
+int updateBoardStatus(char** board) {
 //scan board for locations of mouse,cat,cheese
 //update variables accordingly and return 1 if mouse wins, 2 if cat wins
 	int i = 0, j = 0;
@@ -551,13 +818,13 @@ int updateGameStatus(char** board) {
 				catCol = j;
 				break;
 			case 'P':
-				cheeseX = i;
-				cheeseY = j;
+				cheeseRow = i;
+				cheeseCol = j;
 				break;
 			}
 		}
 	}
-	if ((abs(cheeseX - mouseRow) + abs(cheeseY - mouseCol)) < 2)
+	if ((abs(cheeseRow - mouseRow) + abs(cheeseCol - mouseCol)) < 2)
 		return 1;
 	if ((abs(catRow - mouseRow) + abs(catCol - mouseCol)) < 2)
 		return 2;
@@ -583,13 +850,24 @@ void printBoard(char** board) {
 //printf ("end printboard");
 }
 
+<<<<<<< HEAD
 char** loadGame(int gamenum) {
 //loads the game in "world_gamenum.txt"
 	char temp = '0' + gamenum;
+=======
+char** loadGame(int gameNum) {
+//loads the game in "world_gamenum.txt" - allocs a board array first, and then loads the game world into it
+	char temp = '0' + gameNum;
+>>>>>>> ae0cc88eeaa32c526beff2b7fe7c75bd944b2cdb
 //printf ("%c", temp);
 	int i = 0;
-	char filename[20] = "world_#.txt";
-	filename[6] = temp;
+	char filename[20] = "worlds/world_#.txt";
+	puts(filename);
+	filename[13] = temp;
+
+	if (!gameNum) {
+		sprintf(filename, "worlds/template.txt");
+	}
 
 	char** board = calloc(7, sizeof(char*));
 
@@ -617,33 +895,39 @@ char** loadGame(int gamenum) {
 }
 
 int checkBoard(char** board) {
+	printBoard(board);
+	//returns 0 if board is legal
 	int mouse_flag = 0, cat_flag = 0, cheese_flag = 0;
 	int i = 0, j = 0;
 	char temp;
+
 	for (i = 0; i < 7; i++) {
 		for (j = 0; j < 7; j++) {
-			temp = board[j][j];
+			temp = board[i][j];
+			//printf("%c%c ", temp , board[i][j]);
 			if (temp == 'C') {
-				if (cat_flag)
-					return 0;
-				else
+				if (!cat_flag)
 					cat_flag = 1;
 			}
 			if (temp == 'M') {
-				if (mouse_flag)
-					return 0;
-				else
+				if (!mouse_flag)
 					mouse_flag = 1;
 			}
 			if (temp == 'P') {
-				if (cheese_flag)
-					return 0;
-				else
+				if (!cheese_flag)
 					cheese_flag = 1;
 			}
 		}
 	}
-	return 1;
+	//puts( "");
+	if (!cheese_flag) {
+		return CHEESE_MISSING;
+	} else if (!cat_flag) {
+		return CAT_MISSING;
+	} else if (!mouse_flag) {
+		return MOUSE_MISSING;
+	}
+	return GOOD_WORLD;
 }
 void freeBoard(char** board) {
 	if (board == NULL)
@@ -662,8 +946,8 @@ int saveGame(char** board, int gamenum) {
 //printf("%s", board[6]);
 	int i = 0;
 	char temp = '0' + gamenum;
-	char filename[20] = "world_#.txt";
-	filename[6] = temp;
+	char filename[20] = "worlds/world_#.txt";
+	filename[13] = temp;
 
 	FILE * map = fopen(filename, "w");
 	if (map == NULL) {
