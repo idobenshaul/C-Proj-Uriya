@@ -58,8 +58,12 @@ typedef struct Child Child;
 void free_board(char ***board);
 void childFree (void* child);
 void updateEvalChildren(ListRef list,int (*evaluate) (void* state));
-struct MiniMaxResult getListMaxEval(ListRef list);
-struct MiniMaxResult getListMinEval(ListRef list);
+struct MiniMaxResult getListMaxEval(ListRef list,int (*evaluate) (void* state));
+struct MiniMaxResult getListMinEval(ListRef list,int (*evaluate) (void* state));
+struct MiniMaxResult alphabeta(void* state, unsigned int maxDepth, int alpha, int beta,
+        ListRef (*getChildren) (void* state),FreeFunc freeState,
+        int (*evaluate) (void* state), int isMaxPlayer);
+void copyArray(char *** original, char***copy);
 
 
 #endif /* MINIMAX_H_ */

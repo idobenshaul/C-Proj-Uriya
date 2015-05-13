@@ -202,13 +202,31 @@ ListRef getChildrenStates (void* state){
 	return children;
 }
 
-void switchTurn() {
+/*void switchTurn() {
 	if (!strcmp(turn, "cat")) {
 		sprintf(turn, "mouse");
 	} else
 		sprintf(turn, "cat");
 
+}*/
+void switchTurn() {
+    if (isActiveMinimax) {
+
+        if (!strcmp(miniMaxTurn, "cat")) {
+            sprintf(miniMaxTurn, "mouse");
+        } else if (!strcmp(miniMaxTurn, "mouse")) {
+            sprintf(miniMaxTurn, "cat");
+        }
+    } // end miniMaxActive
+    else {
+        if (!strcmp(turn, "cat")) {
+            sprintf(turn, "mouse");
+        } else
+            sprintf(turn, "cat");
+
+    }
 }
+
 void switchIsOriginalTurn(){
     if (isOriginalTurn==0) {
             isOriginalTurn=1;
@@ -217,11 +235,28 @@ void switchIsOriginalTurn(){
         isOriginalTurn=0;
     }
 }
+struct MiniMaxResult wrapGetBestChild(int actualCatRow, int actualCatCol,
+		int actualMouseRow, int actualMouseCol, void* state,
+		unsigned int maxDepth, ListRef (*getChildren)(void* state),
+		FreeFunc freeState, int (*evaluate)(void* state), int isMaxPlayer) {
 
+	struct MiniMaxResult temp;
+	isActiveMinimax=1;
+	strncpy(miniMaxTurn,turn,7);
+	temp = getBestChild(state, maxDepth, getChildren, freeState, evaluate,
+			isMaxPlayer);
+	mouseRow = actualMouseRow;
+	mouseCol = actualMouseCol;
+	catRow = actualCatRow;
+	catCol = actualCatCol;
+	//makeOriginalBoard(board);
+	/////////////////////////////////////////////////////////////////////////////
+	return temp;
+}
 int main(int argc, char* args[]) {
 
 	setvbuf(stdout, NULL, _IONBF, 0);
-	gameOptions game = { 0, 1, 5, 0 };
+	gameOptions game = { 0, 1, 1, 0 };
     int moveWork=-17;
 	char temp[7];
 	char** board; //7*7 board
@@ -233,7 +268,7 @@ int main(int argc, char* args[]) {
         ///same goes for comp1 and comp2
         int actualCatRow=catRow, actualCatCol=catCol,actualMouseRow=mouseRow, actualMouseCol=mouseCol;
 		printBoard(board);
-		isOriginalTurn=1;
+		//isOriginalTurn=1;
 
 		//printf("cat human : %d, mouse human : %d");
 		if ((game.cat_human==1 && strcmp(turn, "cat")==0)//if it's human turn
@@ -242,25 +277,22 @@ int main(int argc, char* args[]) {
 			scanf("%s", temp);
 		} //end human move
 		else { //machine move
-            if(strcmp(turn, "cat")==0){
-                temp[0]=getBestChild(&board,game.cat_skill, getChildrenStates, free, evalFunc, 1).index;
-            }
-            else{//(strcmp(turn, "mouse")==0)
-                temp[0]=getBestChild(&board,game.mouse_skill, getChildrenStates, free, evalFunc, 0).index;
-            }
+			if (strcmp(turn, "cat") == 0) {
+				temp[0] = wrapGetBestChild(actualCatRow, actualCatCol,
+						actualMouseRow, actualMouseCol, &board, game.cat_skill,
+						getChildrenStates, free, evalFunc, 1).index;
+
+			} else { //(strcmp(turn, "mouse")==0)
+				temp[0] =
+						wrapGetBestChild(actualCatRow, actualCatCol,
+								actualMouseRow, actualMouseCol, &board,
+								game.mouse_skill, getChildrenStates, free,
+								evalFunc, 1).index;
+			}
 		}
-		mouseRow=actualMouseRow;
-		mouseCol=actualMouseCol;
-		catRow=actualCatRow;
-		catCol=actualCatCol;
-		makeOriginalBoard(board);
+
 		/////////////////////////////////////////////////////////////////////////////
-
-		if(isOriginalTurn==0){
-            switchTurn();
-            switchIsOriginalTurn();
-		}
-
+        isActiveMinimax=0;
 		switch (temp[0]) {
 		case 'L':
         case 4:
@@ -380,91 +412,97 @@ int move(char*** board, int direction) {
 
 int move(char*** board, int direction) {
 //returns 1 if move was valid and made, 0 on fail;
-	if (!strcmp(turn, "cat")) {
-		if(isLegalMove(board, catRow, catCol, direction)!=1){
-			return 0;
-		}
-	}
-	if (!strcmp(turn, "mouse")) {
-			if(isLegalMove(board, mouseRow, mouseCol, direction)!=1){
-				return 0;
-			}
-		}
-	if (!strcmp(turn, "cat")) {
-		if (direction == LEFT && catCol > 0
-				&& (*board)[catRow][catCol - 1] != 'W'
-				&& (*board)[catRow][catCol - 1] != 'P') {
-			(*board)[catRow][catCol] = '#';
-			catCol--;
-			(*board)[catRow][catCol] = 'C';
-			return 1;
-		}
-		if (direction == RIGHT && catCol < 6
-				&& (*board)[catRow][catCol + 1] != 'W'
-				&& (*board)[catRow][catCol + 1] != 'P') {
-			(*board)[catRow][catCol] = '#';
-			catCol++;
-			(*board)[catRow][catCol] = 'C';
-			return 1;
-		}
-		if (direction == DOWN && catRow < 6
-				&& (*board)[catRow + 1][catCol] != 'W'
-				&& (*board)[catRow + 1][catCol] != 'P') {
-			(*board)[catRow][catCol] = '#';
-			catRow++;
-			(*board)[catRow][catCol] = 'C';
-			return 1;
-		}
-		if (direction == UP && catRow > 0 && (*board)[catRow - 1][catCol] != 'W'
-				&& (*board)[catRow - 1][catCol] != 'P') {
-			(*board)[catRow][catCol] = '#';
-			catRow--;
-			(*board)[catRow][catCol] = 'C';
-			return 1;
-		}
-	}
-	if (!strcmp(turn, "mouse")) {
-		if (direction == LEFT && mouseCol > 0
-				&& (*board)[mouseRow][mouseCol - 1] != 'W') {
-			(*board)[mouseRow][mouseCol] = '#';
-			mouseCol--;
-			(*board)[mouseRow][mouseCol] = 'M';
-			return 1;
-		}
-		if (direction == RIGHT && mouseCol < 6
-				&& (*board)[mouseRow][mouseCol + 1] != 'W') {
-			(*board)[mouseRow][mouseCol] = '#';
-			mouseCol++;
-			(*board)[mouseRow][mouseCol] = 'M';
-			return 1;
-		}
-		if (direction == DOWN && mouseRow < 6
-				&& (*board)[mouseRow + 1][mouseCol] != 'W') {
-			(*board)[mouseRow][mouseCol] = '#';
-			mouseRow++;
-			(*board)[mouseRow][mouseCol] = 'M';
-			return 1;
-		}
-		if (direction == UP && mouseRow > 0
-				&& (*board)[mouseRow - 1][mouseCol] != 'W') {
-			(*board)[mouseRow][mouseCol] = '#';
-			mouseRow--;
-			(*board)[mouseRow][mouseCol] = 'M';
-			return 1;
-		}
-	}
-	return 0;
-}
+    char moveTurn[7];
+    if (isActiveMinimax){
+        strncpy (moveTurn,miniMaxTurn , 7);
+    }
+    else{
+        strncpy (moveTurn,turn , 7);
+    }
+    puts (moveTurn);
 
-void freeBoard(char** board) {
-	if (board == NULL)
-		return;
-	int i = 0;
-	for (i = 0; i < 7; i++) {
-		free(board[i]);
-	}
-	free(board);
-
+    if (!strcmp(moveTurn, "cat")) {
+        if (!isLegalMove(board, catRow, catCol, direction)) {
+            return 0;
+        }
+    }
+    if (!strcmp(moveTurn, "mouse")) {
+        if (!isLegalMove(board, mouseRow, mouseCol, direction)) {
+            return 0;
+        }
+    }
+    if (!strcmp(moveTurn, "cat")) {
+        if (direction == LEFT && catCol > 0
+                && (*board)[catRow][catCol - 1] != 'W'
+                && (*board)[catRow][catCol - 1] != 'P') {
+            (*board)[catRow][catCol] = '#';
+            catCol--;
+            (*board)[catRow][catCol] = 'C';
+            //switchTurn();
+            return 1;
+        }
+        if (direction == RIGHT && catCol < 6
+                && (*board)[catRow][catCol + 1] != 'W'
+                && (*board)[catRow][catCol + 1] != 'P') {
+            (*board)[catRow][catCol] = '#';
+            catCol++;
+            (*board)[catRow][catCol] = 'C';
+            //switchTurn();
+            return 1;
+        }
+        if (direction == DOWN && catRow < 6
+                && (*board)[catRow + 1][catCol] != 'W'
+                && (*board)[catRow + 1][catCol] != 'P') {
+            (*board)[catRow][catCol] = '#';
+            catRow++;
+            (*board)[catRow][catCol] = 'C';
+            //switchTurn();
+            return 1;
+        }
+        if (direction == UP && catRow > 0 && (*board)[catRow - 1][catCol] != 'W'
+                && (*board)[catRow - 1][catCol] != 'P') {
+            (*board)[catRow][catCol] = '#';
+            catRow--;
+            (*board)[catRow][catCol] = 'C';
+            //switchTurn();
+            return 1;
+        }
+    }
+    if (!strcmp(moveTurn, "mouse")) {
+        if (direction == LEFT && mouseCol > 0
+                && (*board)[mouseRow][mouseCol - 1] != 'W') {
+            (*board)[mouseRow][mouseCol] = '#';
+            mouseCol--;
+            (*board)[mouseRow][mouseCol] = 'M';
+            //switchTurn();
+            return 1;
+        }
+        if (direction == RIGHT && mouseCol < 6
+                && (*board)[mouseRow][mouseCol + 1] != 'W') {
+            (*board)[mouseRow][mouseCol] = '#';
+            mouseCol++;
+            (*board)[mouseRow][mouseCol] = 'M';
+            //switchTurn();
+            return 1;
+        }
+        if (direction == DOWN && mouseRow < 6
+                && (*board)[mouseRow + 1][mouseCol] != 'W') {
+            (*board)[mouseRow][mouseCol] = '#';
+            mouseRow++;
+            (*board)[mouseRow][mouseCol] = 'M';
+            //switchTurn();
+            return 1;
+        }
+        if (direction == UP && mouseRow > 0
+                && (*board)[mouseRow - 1][mouseCol] != 'W') {
+            (*board)[mouseRow][mouseCol] = '#';
+            mouseRow--;
+            (*board)[mouseRow][mouseCol] = 'M';
+            //switchTurn();
+            return 1;
+        }
+    }
+    return 0;
 }
 ///NEED TO DO: the idea is to get catCol... and return a board w/ the objects in the correct positions
 void makeOriginalBoard(char** board){
@@ -607,7 +645,16 @@ int checkBoard(char** board) {
 	}
 	return 1;
 }
+void freeBoard(char** board) {
+	if (board == NULL)
+		return;
+	int i = 0;
+	for (i = 0; i < 7; i++) {
+		free(board[i]);
+	}
+	free(board);
 
+}
 int saveGame(char** board, int gamenum) {
 	if (gamenum > 5 || gamenum < 0)
 		exit(0);

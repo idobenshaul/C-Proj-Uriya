@@ -24,10 +24,11 @@ int move (char*** board, int direction);
 void freeBoard(char** board);
 int updateGameStatus(char** board);
 void printBoard(char** board);
-void copyArray(char *** original, char***copy);
 char turn[7];//toggle cat's turn.
+char miniMaxTurn[7];
 int isOriginalTurn;
 int max_turns ; //max num of turns.
+int isActiveMinimax;
 int turnCounter;
 int evalFunc(void* state);
 ListRef getChildrenStates (void* state);
@@ -49,5 +50,9 @@ struct gameOptions {
 	int mouse_skill;
 };
 typedef struct gameOptions gameOptions;
+struct MiniMaxResult wrapGetBestChild(int actualCatRow, int actualCatCol,
+		int actualMouseRow, int actualMouseCol, void* state,
+		unsigned int maxDepth, ListRef (*getChildren)(void* state),
+		FreeFunc freeState, int (*evaluate)(void* state), int isMaxPlayer);
 
 #endif /* LOGIC_H_ */
